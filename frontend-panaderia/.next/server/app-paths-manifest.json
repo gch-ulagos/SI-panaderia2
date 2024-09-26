@@ -1,5 +1,6 @@
 {
   "/inventory/page": "app/inventory/page.js",
-  "/inventory/findUsers/page": "app/inventory/findUsers/page.js",
-  "/login/page": "app/login/page.js"
+  "/login/page": "app/login/page.js",
+  "/inventory/[id]/edit/page": "app/inventory/[id]/edit/page.js",
+  "/inventory/bulkCreate/page": "app/inventory/bulkCreate/page.js"
 }

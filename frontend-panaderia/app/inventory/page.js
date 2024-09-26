@@ -1,6 +1,6 @@
 "use client"
 import React, {useEffect, useState} from 'react';
-import {Container, Table, TableBody, TableCell, TableHead, TableRow} from "@mui/material";
+import {Container, Table, TableBody, TableCell, TableHead, TableRow, TextField, Button} from "@mui/material";
 import IconButton from '@mui/material/IconButton';
 import {Edit} from "@mui/icons-material";
 import AuthService from "../../services/AuthService";
@@ -8,11 +8,12 @@ import ProductService from '@/services/ProductService';
 import { useRouter } from 'next/navigation';
 import Navbar from '../../components/Navbar';
 
-export default function Users(){
+export default function Inventory() {
 
     const router = useRouter();
     const [users, setUsers] = useState([]);
     const [products, setProducts] = useState([]);
+    const [searchTerm, setSearchTerm] = useState(""); // Nuevo estado para almacenar la búsqueda
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem('user'));
@@ -20,11 +21,11 @@ export default function Users(){
         if(!user){
             router.push('/login');
         }
-        if(user?.roles?.includes('admin')){
+        if(user?.roles?.includes('admin')) {
             getAllUsers();
             getAllProducts(token);
         }
-        if(user?.roles?.includes('user')){
+        if(user?.roles?.includes('user')) {
             getUser(user.id);
             getAllProducts(token);
         }
@@ -47,35 +48,57 @@ export default function Users(){
             const productsData = await ProductService.getProducts(token);
             setProducts(productsData || []);
         } catch (e) {
-            console.error("error fetching products", e);
+            console.error("Error fetching products", e);
         }
     }
 
-    const handleEdit = (user) => {
-        router.push('/inventory/' + user.id + '/edit');
+    const handleEdit = (product) => {
+        router.push('/inventory/' + product.id + '/edit');
     }
+
+    // Filtrar productos según el término de búsqueda
+    const filteredProducts = products.filter((product) =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
         <Container>
             <Navbar />
-            <button onClick={() => router.push('/users/findUsers')}>Find Users</button>
-            <button onClick={() => router.push('/users/bulkCreate')}>Bulk Create</button>
             <h1>Inventario</h1>
+            <Button onClick={() => router.push('/inventory/bulkCreate')}>Insertar productos</Button>
+            <TextField
+                label="Buscar producto"
+                variant="outlined"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                fullWidth
+                margin="normal"
+            />
             <Table>
                 <TableHead>
                     <TableRow>
+                        <TableCell>ID</TableCell>
                         <TableCell>Nombre del Producto</TableCell>
                         <TableCell>Stock</TableCell>
                         <TableCell>Medida</TableCell>
+                        <TableCell>Producción local</TableCell>
+                        <TableCell>Acciones</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {
-                        products.map((product) => (
+                        filteredProducts.map((product) => (
                             <TableRow key={product.id}>
+                                <TableCell>{product.id}</TableCell>
                                 <TableCell>{product.name}</TableCell>
                                 <TableCell>{product.stock}</TableCell>
                                 <TableCell>{product.measure_type}</TableCell>
+                                <TableCell>{product.production ? "Sí" : "No"}</TableCell>
+                                <TableCell>
+                                    <IconButton color="primary" aria-label={"Editar producto " + product.id} onClick={() => handleEdit(product)}>
+                                        <Edit />
+                                    </IconButton>
+                                </TableCell>
                             </TableRow>
                         ))
                     }

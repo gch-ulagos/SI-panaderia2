@@ -1,36 +1,65 @@
 "use client"
-import React, { useState } from 'react';
-import { Container, TextField, Button, Typography, Alert, AlertTitle } from '@mui/material';
-import { Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import React, { useEffect, useState } from 'react';
+import { Container, TextField, Button, Typography, Alert, AlertTitle, Table, TableBody, TableCell, TableHead, TableRow, Select, MenuItem } from '@mui/material';
+import Navbar from '../../../components/Navbar';
+import ProductService from '@/services/ProductService';
+import CategoryService from '../../../services/CategoryService';
+import { useRouter } from 'next/navigation';
 
-import Navbar from '../../../components/Navbar'
-import AuthService from '../../../services/AuthService';
-
-export default function BulkCreate() {
-    const [users, setUsersData] = useState([]);
+export default function BulkCreateProducts() {
+    const router = useRouter();
+    const [products, setProductsData] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [successMessage, setSuccessMessage] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
 
+    // Fetch categories on component mount
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                const data = await CategoryService.getAllCategories(token);
+                setCategories(data || []);
+            } catch (error) {
+                console.error("Error fetching categories:", error);
+                setErrorMessage("Error fetching categories.");
+            }
+        };
+
+        fetchCategories();
+    }, []);
+
     const handleInputChange = (index, field, value) => {
-        const updatedUsersData = [...users];
-        updatedUsersData[index][field] = value;
-        setUsersData(updatedUsersData);
+        const updatedProductsData = [...products];
+        updatedProductsData[index][field] = value;
+        setProductsData(updatedProductsData);
     };
 
     const addRow = () => {
-        setUsersData([...users, { name: '', email: '', password: '', password_second: '', cellphone: '' }]);
+        setProductsData([...products, { name: '', category: '', brand: '', price: '', measure_type: '', stock: '', production: false }]);
     };
 
     const handleSubmit = async () => {
         try {
-            console.log('Sending users:', users);
             const token = localStorage.getItem("token");
-            const response = await AuthService.bulkCreate(token, users);
+
+            // Convert price and stock to numbers
+            const formattedProducts = products.map(product => ({
+                ...product,
+                price: Number(product.price),  // Convert to number
+                stock: Number(product.stock)   // Convert to number
+            }));
+
+            console.log('enviando:', formattedProducts);
+            const response = await ProductService.bulkCreate(formattedProducts, token);
             setSuccessMessage(response.message);
             setErrorMessage(null);
-            setUsersData([]);
+            setProductsData([]); // Reiniciar formulario
+
+            // Redirigir a la página de inventario
+            router.push('/inventory');
         } catch (error) {
-            setErrorMessage(error.message || 'An error occurred while creating users.');
+            setErrorMessage(error.message || 'An error occurred while creating products.');
             setSuccessMessage(null);
         }
     };
@@ -39,7 +68,7 @@ export default function BulkCreate() {
         <Container>
             <Navbar />
             <Typography variant="h4" gutterBottom>
-                Bulk Create
+                Bulk Create Products
             </Typography>
             {successMessage && (
                 <Alert severity="success">
@@ -57,61 +86,83 @@ export default function BulkCreate() {
                 <TableHead>
                     <TableRow>
                         <TableCell>Nombre</TableCell>
-                        <TableCell>Email</TableCell>
-                        <TableCell>Contraseña</TableCell>
-                        <TableCell>Confirmar Contraseña</TableCell>
-                        <TableCell>Celular</TableCell>
+                        <TableCell>Categoría</TableCell>
+                        <TableCell>Marca</TableCell>
+                        <TableCell>Precio</TableCell>
+                        <TableCell>Medida</TableCell>
+                        <TableCell>Stock</TableCell>
+                        <TableCell>Producción Local</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {users.map((user, index) => (
+                    {products.map((product, index) => (
                         <TableRow key={index}>
                             <TableCell>
                                 <TextField
                                     fullWidth
                                     required
-                                    placeholder="Oleh Oleig"
-                                    value={user.name}
+                                    value={product.name}
                                     onChange={(e) => handleInputChange(index, 'name', e.target.value)}
                                 />
                             </TableCell>
                             <TableCell>
+                                <Select
+                                    fullWidth
+                                    required
+                                    value={product.category}
+                                    onChange={(e) => handleInputChange(index, 'category', e.target.value)}
+                                >
+                                    {categories.map((category) => (
+                                        <MenuItem key={category.id} value={category.id}>
+                                            {category.name}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </TableCell>
+                            <TableCell>
                                 <TextField
                                     fullWidth
                                     required
-                                    placeholder="alfa@beta.cl"
-                                    value={user.email}
-                                    onChange={(e) => handleInputChange(index, 'email', e.target.value)}
+                                    value={product.brand}
+                                    onChange={(e) => handleInputChange(index, 'brand', e.target.value)}
                                 />
                             </TableCell>
                             <TableCell>
                                 <TextField
                                     fullWidth
                                     required
-                                    type="password"
-                                    placeholder="****"
-                                    value={user.password}
-                                    onChange={(e) => handleInputChange(index, 'password', e.target.value)}
+                                    type="number"
+                                    value={product.price}
+                                    onChange={(e) => handleInputChange(index, 'price', e.target.value)}
                                 />
                             </TableCell>
                             <TableCell>
                                 <TextField
                                     fullWidth
                                     required
-                                    type="password"
-                                    placeholder="****"
-                                    value={user.password_second}
-                                    onChange={(e) => handleInputChange(index, 'password_second', e.target.value)}
+                                    value={product.measure_type}
+                                    onChange={(e) => handleInputChange(index, 'measure_type', e.target.value)}
                                 />
                             </TableCell>
                             <TableCell>
                                 <TextField
                                     fullWidth
                                     required
-                                    placeholder="+56987654321"
-                                    value={user.cellphone}
-                                    onChange={(e) => handleInputChange(index, 'cellphone', e.target.value)}
+                                    type="number"
+                                    value={product.stock}
+                                    onChange={(e) => handleInputChange(index, 'stock', e.target.value)}
                                 />
+                            </TableCell>
+                            <TableCell>
+                                <Select
+                                    fullWidth
+                                    required
+                                    value={product.production}
+                                    onChange={(e) => handleInputChange(index, 'production', e.target.value)}
+                                >
+                                    <MenuItem value={true}>Sí</MenuItem>
+                                    <MenuItem value={false}>No</MenuItem>
+                                </Select>
                             </TableCell>
                         </TableRow>
                     ))}
@@ -121,7 +172,7 @@ export default function BulkCreate() {
                 Añadir fila
             </Button>
             <Button variant="contained" color="primary" onClick={handleSubmit}>
-                Crear Usuarios
+                Crear Productos
             </Button>
         </Container>
     );

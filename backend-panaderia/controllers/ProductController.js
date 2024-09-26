@@ -16,7 +16,9 @@ router.post('/bulkCreate',
     ],
     async (req, res) => {
         const response = await ProductService.bulkCreate(req.body);
+        console.log('Bulk create response:', response);
         res.status(response.code).json(response.message);
+        
     });
 
 router.get('/getAllProducts',
