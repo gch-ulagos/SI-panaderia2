@@ -21,7 +21,7 @@ export default function Login(){
         const login = await AuthService.handleLogin(email, password);
         setState(login);
         if(login){
-            router.push('/users');
+            router.push('/inventory');
         }
     }
 

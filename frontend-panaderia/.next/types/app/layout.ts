@@ -1,4 +1,4 @@
-// File: C:\Users\phipe\Documents\GitHub\SI-panaderia\frontend-panaderia\app\layout.js
+// File: C:\Users\Jagger\Desktop\jagger\dev\SI-panaderia2\frontend-panaderia\app\layout.js
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
