@@ -1,4 +1,4 @@
-// File: C:\Users\Jagger\Desktop\jagger\dev\SI-panaderia2\frontend-panaderia\app\login\page.js
+// File: C:\Users\phipe\OneDrive\Documentos\GitHub\SI-panaderia2\frontend-panaderia\app\login\page.js
 import * as entry from '../../../../app/login/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
