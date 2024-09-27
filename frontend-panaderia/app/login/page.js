@@ -41,7 +41,7 @@ export default function Login(){
                     <div className={"login-box-child"}>
                         <TextField
                             id="outlined-basic"
-                            label="Email"
+                            label="Correo"
                             variant="outlined"
                             placeholder="alfa@beta.cl"
                             onChange={(e) => setEmail(e.target.value)}
@@ -51,7 +51,7 @@ export default function Login(){
                     <div className={"login-box-child"}>
                         <TextField
                             id="outlined-basic"
-                            label="Password"
+                            label="Contraseña"
                             variant="outlined"
                             placeholder="*********"
                             type="password"

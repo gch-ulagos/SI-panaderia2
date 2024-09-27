@@ -22,6 +22,12 @@
       "static/chunks/main-app.js",
       "static/css/app/inventory/page.css",
       "static/chunks/app/inventory/page.js"
+    ],
+    "/inventory/bulkCreate/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/inventory/bulkCreate/page.css",
+      "static/chunks/app/inventory/bulkCreate/page.js"
     ]
   }
 }

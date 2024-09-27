@@ -1,6 +1,7 @@
 {
-  "/login/page": "app/login/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
   "/page": "app/page.js",
-  "/inventory/page": "app/inventory/page.js"
+  "/inventory/page": "app/inventory/page.js",
+  "/login/page": "app/login/page.js",
+  "/inventory/bulkCreate/page": "app/inventory/bulkCreate/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js"
 }
