@@ -23,6 +23,11 @@
       "static/css/app/inventory/page.css",
       "static/chunks/app/inventory/page.js"
     ],
+    "/inventory/[id]/edit/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/inventory/[id]/edit/page.js"
+    ],
     "/inventory/bulkCreate/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",

@@ -34,9 +34,9 @@ export default function Login(){
             <Card className={"login-box"}>
                 <CardContent>
                     <div className={"login-box-child"}>
-                        <h1>Inicia Sesión</h1>
+                        <h1>Iniciar sesión</h1>
                     </div>
-                    <SimpleSnackbar message={"Usuario o contraseña incorrectos"} openSnack={!state}
+                    <SimpleSnackbar message={"Usuario o contraseña incorrectas"} openSnack={!state}
                                     closeSnack={() => setState(true)}/>
                     <div className={"login-box-child"}>
                         <TextField
@@ -59,10 +59,10 @@ export default function Login(){
                         />
                     </div>
                     <div className={"login-box-child"}>
-                        <Button onClick={handleLogin} variant="contained">Iniciar Sesión</Button>
+                        <Button onClick={handleLogin} variant="contained" sx={{textTransform:'none'}}>Iniciar sesión</Button>
                     </div>
                     <div className={"login-box-child"}>
-                        <Button onClick={handleRegister}>Registrar</Button>
+                        <Button onClick={handleRegister} sx={{textTransform:'none'}}>Registrar</Button>
                     </div>
                 </CardContent>
             </Card>

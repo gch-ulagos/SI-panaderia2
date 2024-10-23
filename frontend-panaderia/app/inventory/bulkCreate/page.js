@@ -22,7 +22,7 @@ export default function BulkCreateProducts() {
                 setCategories(data || []);
             } catch (error) {
                 console.error("Error fetching categories:", error);
-                setErrorMessage("Error fetching categories.");
+                setErrorMessage("Error al obtener categoría");
             }
         };
 
@@ -59,7 +59,7 @@ export default function BulkCreateProducts() {
             // Redirigir a la página de inventario
             router.push('/inventory');
         } catch (error) {
-            setErrorMessage(error.message || 'An error occurred while creating products.');
+            setErrorMessage(error.message || 'Error al crear producto');
             setSuccessMessage(null);
         }
     };
@@ -68,11 +68,11 @@ export default function BulkCreateProducts() {
         <Container>
             <Navbar />
             <Typography variant="h4" gutterBottom>
-                Bulk Create Products
+                Creación de productos
             </Typography>
             {successMessage && (
                 <Alert severity="success">
-                    <AlertTitle>Success</AlertTitle>
+                    <AlertTitle>Exitoso</AlertTitle>
                     {successMessage}
                 </Alert>
             )}
@@ -91,7 +91,7 @@ export default function BulkCreateProducts() {
                         <TableCell>Precio</TableCell>
                         <TableCell>Medida</TableCell>
                         <TableCell>Stock</TableCell>
-                        <TableCell>Producción Local</TableCell>
+                        <TableCell>Producción local</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -168,11 +168,11 @@ export default function BulkCreateProducts() {
                     ))}
                 </TableBody>
             </Table>
-            <Button variant="contained" color="primary" onClick={addRow}>
+            <Button variant="contained" color="primary" onClick={addRow} sx={{textTransform:'none'}}>
                 Añadir fila
             </Button>
-            <Button variant="contained" color="primary" onClick={handleSubmit}>
-                Crear Productos
+            <Button variant="contained" color="primary" onClick={handleSubmit} sx={{textTransform:'none'}} style={{ marginLeft: '16px'}}>
+                Crear productos
             </Button>
         </Container>
     );

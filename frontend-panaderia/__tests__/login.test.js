@@ -23,7 +23,7 @@ describe('Login Page', () => {
 
     test('should render the login page', () => {
         render(<Login />);
-        const h1 = screen.getByText('Inicia Sesión');
+        const h1 = screen.getByText('Iniciar Sesión');
         const button = screen.getByText('Registrar');
         expect(h1).toBeInTheDocument();
         expect(button).toBeInTheDocument();

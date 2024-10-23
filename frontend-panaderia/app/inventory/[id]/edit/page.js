@@ -44,11 +44,11 @@ const EditProduct = (props) => {
 
     return (
         <div>
-            <h1>Editar Producto {id}</h1>
+            <h1>Editar producto {id}</h1>
             {!product ? "Cargando datos del producto..." : (
                 <Container>
                     <TextField
-                        label="Nombre del Producto"
+                        label="Nombre del producto"
                         name="name"
                         variant="outlined"
                         value={editedProduct.name}
@@ -81,15 +81,16 @@ const EditProduct = (props) => {
                         onChange={(e) => handleChange(e.target.checked, 'production')}
                         color="primary"
                     />
-                    <label>Producción Local</label>
+                    <label>Producción local</label>
                     <Button
                         type="button"
                         variant="contained"
                         color="primary"
                         onClick={handleUpdate}
-                        style={{ marginTop: '16px' }}
+                        style={{ marginLeft: '16px',marginTop: '16px'}}
+                        sx={{textTransform:'none'}}
                     >
-                        Actualizar Producto
+                        Actualizar producto
                     </Button>
                 </Container>
             )}

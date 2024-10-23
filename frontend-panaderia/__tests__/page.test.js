@@ -19,7 +19,7 @@ describe('Page', () => {
 
     test('should render the page', () => {
         render(<Home />);
-        const button = screen.getByText('Iniciar Sesión');
+        const button = screen.getByText('Iniciar sesión');
         button.click();
         expect(button).toBeInTheDocument();
         expect(push).toHaveBeenCalledTimes(1);

@@ -28,15 +28,15 @@ export default function Home() {
                     Panadería Santa Laura
                 </Typography>
                 <Typography variant="h6" gutterBottom>
-                    Sistema de Inventario
+                    Sistema de inventario
                 </Typography>
                 <Button 
                     id="iniciar-sesion" 
                     variant="contained" 
                     onClick={() => router.push('/login')}
-                    sx={{ mt: 4 }}
+                    sx={{ mt: 4 , textTransform:'none'}}
                 >
-                    Iniciar Sesión
+                    Iniciar sesión
                 </Button>
             </Box>
         </Container>

@@ -26,8 +26,9 @@ const Navbar = () => {
                 {user?.name}
             </div>
             <div className="navbar-item">
-                <Button onClick={handleLogout}>
-                    Logout
+                <Button onClick={handleLogout}
+                sx={{textTransform:'none'}}>
+                    Desconectarse
                 </Button>
             </div>
         </div>

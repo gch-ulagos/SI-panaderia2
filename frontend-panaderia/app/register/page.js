@@ -39,7 +39,7 @@ const Register = () => {
             <SimpleSnackbar message={message} openSnack={openSnack} closeSnack={() => {setOpenSnack(!openSnack)}}/>
             <Card className="form">
                 <CardContent>
-                    <h1>Register User</h1>
+                    <h1>Registrar Usuario</h1>
                     <div className="input-form">
                         <TextField
                             id="outlined-basic"
@@ -93,7 +93,7 @@ const Register = () => {
                         />
                     </div>
                     <div className="input-form">
-                        <Button variant="contained" onClick={handleRegister}>Registrar</Button>
+                        <Button variant="contained" onClick={handleRegister} sx={{textTransform:'none'}}>Registrar</Button>
                     </div>
                 </CardContent>
             </Card>

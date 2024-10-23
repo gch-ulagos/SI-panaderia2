@@ -13,7 +13,7 @@ export default function Inventory() {
     const router = useRouter();
     const [users, setUsers] = useState([]);
     const [products, setProducts] = useState([]);
-    const [searchTerm, setSearchTerm] = useState(""); // Nuevo estado para almacenar la búsqueda
+    const [searchTerm, setSearchTerm] = useState(""); 
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem('user'));
@@ -56,7 +56,6 @@ export default function Inventory() {
         router.push('/inventory/' + product.id + '/edit');
     }
 
-    // Filtrar productos según el término de búsqueda
     const filteredProducts = products.filter((product) =>
         product.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -65,7 +64,7 @@ export default function Inventory() {
         <Container>
             <Navbar />
             <h1>Inventario</h1>
-            <Button onClick={() => router.push('/inventory/bulkCreate')}>Insertar productos</Button>
+            <Button onClick={() => router.push('/inventory/bulkCreate')} sx={{textTransform:'none'}}>Insertar productos</Button>
             <TextField
                 label="Buscar producto"
                 variant="outlined"
@@ -78,7 +77,7 @@ export default function Inventory() {
                 <TableHead>
                     <TableRow>
                         <TableCell>ID</TableCell>
-                        <TableCell>Nombre del Producto</TableCell>
+                        <TableCell>Nombre del producto</TableCell>
                         <TableCell>Stock</TableCell>
                         <TableCell>Medida</TableCell>
                         <TableCell>Producción local</TableCell>
