@@ -65,6 +65,7 @@ export default function Inventory() {
             <Navbar />
             <h1>Inventario</h1>
             <Button onClick={() => router.push('/inventory/bulkCreate')} sx={{textTransform:'none'}}>Insertar productos</Button>
+            <Button onClick={() => router.push('/inventory/Category')} sx={{textTransform:'none'}}>Categorias</Button>
             <TextField
                 label="Buscar producto"
                 variant="outlined"
