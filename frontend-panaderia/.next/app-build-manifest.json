@@ -29,10 +29,16 @@
       "static/css/app/inventory/Category/page.css",
       "static/chunks/app/inventory/Category/page.js"
     ],
-    "/_not-found/page": [
+    "/inventory/bulkCreate/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/_not-found/page.js"
+      "static/css/app/inventory/bulkCreate/page.css",
+      "static/chunks/app/inventory/bulkCreate/page.js"
+    ],
+    "/inventory/[id]/edit/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/inventory/[id]/edit/page.js"
     ]
   }
 }

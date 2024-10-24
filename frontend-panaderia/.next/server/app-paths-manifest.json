@@ -1,7 +1,8 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/page": "app/page.js",
   "/login/page": "app/login/page.js",
   "/inventory/page": "app/inventory/page.js",
-  "/inventory/Category/page": "app/inventory/Category/page.js"
+  "/inventory/Category/page": "app/inventory/Category/page.js",
+  "/inventory/bulkCreate/page": "app/inventory/bulkCreate/page.js",
+  "/inventory/[id]/edit/page": "app/inventory/[id]/edit/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js"
 }

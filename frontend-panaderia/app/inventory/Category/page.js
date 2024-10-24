@@ -110,7 +110,7 @@ export default function ManageCategories() {
                     fullWidth
                 />
                 <Button variant="contained" color="primary" onClick={addCategory} style={{ marginTop: '10px', textTransform: 'none' }}>
-                    Añadir Categoría
+                    Añadir categoría
                 </Button>
             </div>
 
@@ -118,7 +118,7 @@ export default function ManageCategories() {
             <Table>
                 <TableHead>
                     <TableRow>
-                        <TableCell>Nombre de la Categoría</TableCell>
+                        <TableCell>Nombre de la categoría</TableCell>
                         <TableCell>Acciones</TableCell>
                     </TableRow>
                 </TableHead>

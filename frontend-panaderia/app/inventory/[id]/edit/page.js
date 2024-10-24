@@ -1,22 +1,26 @@
 "use client"
 import React, {useEffect, useState} from 'react';
-import {Container, Switch, TextField, Button} from "@mui/material";
+import {Container, Switch, TextField, Button, Select, MenuItem} from "@mui/material";
 import { useRouter } from 'next/navigation';
 import ProductService from '@/services/ProductService';
+import CategoryService from '@/services/CategoryService';
 
 const EditProduct = (props) => {
     const {id} = props.params;
     const router = useRouter();
 
     const [product, setProduct] = useState(null);
+    const [categories, setCategories] = useState([]);
 
     const [editedProduct, setEditedProduct] = useState({
         name: '',
+        category: '',
         stock: 0,
         measure_type: '',
         production: false
     });
 
+    // Maneja los cambios en los campos del producto
     const handleChange = (value, field) => {
         setEditedProduct({
             ...editedProduct,
@@ -24,6 +28,7 @@ const EditProduct = (props) => {
         });
     }
 
+    // Actualiza el producto
     const handleUpdate = () => {
         const token = localStorage.getItem('token');
         (async () => {
@@ -33,13 +38,25 @@ const EditProduct = (props) => {
         })();
     }
 
+    // Carga los datos del producto y las categorías disponibles
     useEffect(() => {
         const token = localStorage.getItem('token');
-        (async () => {
+
+        // Obtener producto por ID
+        const fetchProduct = async () => {
             const data = await ProductService.getProductById(id, token);
             setProduct(data);
             setEditedProduct(data); // Rellena los campos con los datos existentes del producto
-        })();
+        };
+
+        // Obtener categorías
+        const fetchCategories = async () => {
+            const categoriesData = await CategoryService.getAllCategories(token);
+            setCategories(categoriesData);
+        };
+
+        fetchProduct();
+        fetchCategories();
     }, [id]);
 
     return (
@@ -66,6 +83,20 @@ const EditProduct = (props) => {
                         fullWidth
                         margin="normal"
                     />
+                    {/* Select para Categorías */}
+                    <Select
+                        label="Categoría"
+                        fullWidth
+                        value={editedProduct.category}
+                        onChange={(e) => handleChange(e.target.value, 'category')}
+                        margin="normal"
+                    >
+                        {categories.map((category) => (
+                            <MenuItem key={category.id} value={category.id}>
+                                {category.name}
+                            </MenuItem>
+                        ))}
+                    </Select>
                     <TextField
                         label="Medida"
                         name="measure_type"
