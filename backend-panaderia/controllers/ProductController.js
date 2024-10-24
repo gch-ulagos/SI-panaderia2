@@ -43,7 +43,7 @@ router.get(
     }
 );
 
-router.put('/:id', [
+router.put('/updateProduct/:id', [
         NumberMiddleware.isNumber,
         AuthMiddleware.validateToken,
     ],

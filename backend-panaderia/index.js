@@ -6,6 +6,7 @@ import AuthController from './controllers/AuthController.js';
 import ProductController from './controllers/ProductController.js';
 import CategoryController from './controllers/CategoryController.js';
 import InventoryController from './controllers/InventoryController.js';
+import ProductionController from './controllers/ProductionController.js';
 const app = express();
 
 app.use(
@@ -22,6 +23,7 @@ app.use('/api/v1/users', UserController);
 app.use('/api/v1/category', CategoryController);
 app.use('/api/v1/products', ProductController);
 app.use('/api/v1/inventory', InventoryController);
+app.use('/api/v1/production', ProductionController);
 app.use('/api/v1/auth', AuthController);
 
 app.listen(3001, ()  => {

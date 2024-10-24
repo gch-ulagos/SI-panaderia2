@@ -29,7 +29,7 @@ const getProductById = async (id, token) => {
 
 const updateProduct = async (id, productData, token) => {
     try {
-        const response = await axios.put(`http://localhost:3001/api/v1/products/${id}`, productData, {
+        const response = await axios.put(`http://localhost:3001/api/v1/products/updateProduct/${id}`, productData, {
             headers: {
                 token
             }
