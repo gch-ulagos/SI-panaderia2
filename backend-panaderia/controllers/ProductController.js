@@ -2,8 +2,22 @@ import { Router } from 'express';
 import ProductService from '../services/ProductService.js';
 import NumberMiddleware from '../middlewares/number.middleware.js';
 import AuthMiddleware from '../middlewares/auth.middleware.js';
+import db from '../dist/db/models/index.js';
+
+const Producto = db.Producto;
 
 const router = Router();
+try {
+    await db.sequelize.authenticate();
+    console.log('Conexión a la base de datos establecida correctamente.');
+} catch (error) {
+    console.error('No se pudo conectar a la base de datos:', error);
+}
+
+router.post('/createProduct', async (req, res) => {
+    const response = await ProductService.createProduct(req.body);
+    res.status(response.code).json(response.message);
+});
 
 router.post('/createProduct', async (req, res) => {
     const response = await ProductService.createProduct(req.body);
@@ -30,6 +44,22 @@ router.get('/getAllProducts',
         res.status(response.code).json(response.message);
     }
 );
+
+router.get('/getAllProductsForProduction', async (req, res) => {
+    const token = req.headers.token; // Manejar autenticación si es necesario
+
+    try {
+        const products = await Producto.findAll({
+            where: {
+                production: true // Filtrar por producción true
+            }
+        });
+        res.json(products);
+    } catch (error) {
+        console.error('Error al obtener productos:', error); // Imprimir el error en consola
+        res.status(500).json({ message: 'Error al obtener productos', error: error.message || error }); // Enviar mensaje de error
+    }
+});
 
 router.get(
     '/:id',
@@ -63,5 +93,7 @@ router.delete('/:id',
         res.status(response.code).json(response.message);
     }
 );
+
+
 
 export default router;

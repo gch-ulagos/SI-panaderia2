@@ -161,6 +161,16 @@ eval("/* __next_internal_client_entry_do_not_use__  cjs */ \nvar _interopRequire
 
 /***/ }),
 
+/***/ "(ssr)/./node_modules/@mui/icons-material/esm/Delete.js":
+/*!********************************************************!*\
+  !*** ./node_modules/@mui/icons-material/esm/Delete.js ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _utils_createSvgIcon__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils/createSvgIcon */ \"(ssr)/./node_modules/@mui/material/utils/createSvgIcon.js\");\n/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ \"(ssr)/./node_modules/next/dist/server/future/route-modules/app-page/vendored/ssr/react-jsx-runtime.js\");\n/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__);\n/* __next_internal_client_entry_do_not_use__ default auto */ \n\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,_utils_createSvgIcon__WEBPACK_IMPORTED_MODULE_1__[\"default\"])(/*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(\"path\", {\n    d: \"M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z\"\n}), \"Delete\"));\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHNzcikvLi9ub2RlX21vZHVsZXMvQG11aS9pY29ucy1tYXRlcmlhbC9lc20vRGVsZXRlLmpzIiwibWFwcGluZ3MiOiI7Ozs7Ozs7NkRBRWtEO0FBQ0Y7QUFDaEQsaUVBQWVBLGdFQUFhQSxDQUFFLFdBQVcsR0FBRUUsc0RBQUlBLENBQUMsUUFBUTtJQUN0REMsR0FBRztBQUNMLElBQUksV0FBVSIsInNvdXJjZXMiOlsid2VicGFjazovL2Zyb250ZW5kLXBhbmFkZXJpYS8uL25vZGVfbW9kdWxlcy9AbXVpL2ljb25zLW1hdGVyaWFsL2VzbS9EZWxldGUuanM/ODc0NCJdLCJzb3VyY2VzQ29udGVudCI6WyJcInVzZSBjbGllbnRcIjtcblxuaW1wb3J0IGNyZWF0ZVN2Z0ljb24gZnJvbSAnLi91dGlscy9jcmVhdGVTdmdJY29uJztcbmltcG9ydCB7IGpzeCBhcyBfanN4IH0gZnJvbSBcInJlYWN0L2pzeC1ydW50aW1lXCI7XG5leHBvcnQgZGVmYXVsdCBjcmVhdGVTdmdJY29uKCAvKiNfX1BVUkVfXyovX2pzeChcInBhdGhcIiwge1xuICBkOiBcIk02IDE5YzAgMS4xLjkgMiAyIDJoOGMxLjEgMCAyLS45IDItMlY3SDZ6TTE5IDRoLTMuNWwtMS0xaC01bC0xIDFINXYyaDE0elwiXG59KSwgJ0RlbGV0ZScpOyJdLCJuYW1lcyI6WyJjcmVhdGVTdmdJY29uIiwianN4IiwiX2pzeCIsImQiXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///(ssr)/./node_modules/@mui/icons-material/esm/Delete.js\n");
+
+/***/ }),
+
 /***/ "(ssr)/./node_modules/@mui/icons-material/esm/Edit.js":
 /*!******************************************************!*\
   !*** ./node_modules/@mui/icons-material/esm/Edit.js ***!

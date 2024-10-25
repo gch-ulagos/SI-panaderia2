@@ -191,7 +191,20 @@ const bulkCreate = async (productsToCreate) => {
     };
 };
 
+const getProductsForProduction = async (token) => {
+    try {
+        const response = await axios.get('http://localhost:3001/api/v1/products/getAllProductsForProduction', {
+            headers: { token } // Cambia a Authorization si usas este esquema
+        });
+        return response.data; // Esto debería ser un arreglo de productos
+    } catch (error) {
+        console.error('Error al obtener productos:', error.response?.data || error.message);
+        throw error; // Lanza el error para manejarlo en el componente
+    }
+};
+
 export default {
+    getProductsForProduction,
     createProduct,
     getProductById,
     updateProduct,

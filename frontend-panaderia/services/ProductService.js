@@ -1,17 +1,16 @@
 import axios from "axios";
 
-const getProducts = async (token) => {
+const getAllProductions = async (token) => {
     try {
-        const resp = await axios.get('http://localhost:3001/api/v1/products/getAllProducts', {
-            headers: {
-                token
-            }
+        const response = await axios.get(`http://localhost:3001/api/v1/production/getAllProductions`, {
+            headers: { token }
         });
-        return resp.data;
-    } catch (e) {
-        console.error(e)
+        return response.data.message;
+    } catch (error) {
+        console.error('Error obteniendo producciones:', error);
+        throw error;
     }
-}
+};
 
 const getProductById = async (id, token) => {
     try {
@@ -56,8 +55,32 @@ const bulkCreate = async (products, token) => {
         throw error;
     }
 }
+const getProductsForProduction = async (token) => {
+    try {
+        const response = await axios.get('http://localhost:3001/api/v1/products/getAllProductsForProduction', {
+            headers: { token }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching products for production:', error);
+        throw error;
+    }
+};
+
+const getProducts = async (token) => {
+    try {
+        const response = await axios.get('http://localhost:3001/api/v1/products/getAllProducts', {
+            headers: { token }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        throw error;
+    }
+};
 
 export default {
+    getProductsForProduction,
     getProducts,
     getProductById,
     updateProduct,

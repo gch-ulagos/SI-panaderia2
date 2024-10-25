@@ -1,4 +1,3 @@
-// services/CategoryService.js
 import axios from 'axios';
 
 const getAllCategories = async (token) => { // Obtener el token del Local Storage

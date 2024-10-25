@@ -1,9 +1,11 @@
 import db from '../dist/db/models/index.js';
 
-const addProductToInventory = async (productId, stock) => {
+const addProductToInventory = async (productId, stock, production = true) => {
     try {
+        // Determina la fuente de la entrada de inventario
         const source = production ? 'Producción' : 'Compra';
 
+        // Crea un nuevo registro en la tabla de inventario
         await db.Inventario.create({
             id_product: productId,
             source: source,
@@ -11,28 +13,37 @@ const addProductToInventory = async (productId, stock) => {
             createdAt: new Date(),
             updatedAt: new Date(),
         });
+        
         return {
             code: 200,
-            message: 'Product added to inventory successfully.'
+            message: 'Producto añadido al inventario correctamente.'
         };
     } catch (error) {
-        console.error('Error adding product to inventory:', error);
+        console.error('Error al añadir producto al inventario:', error);
         return {
             code: 500,
-            message: 'Error adding product to inventory.'
+            message: 'Error al añadir producto al inventario.'
         };
     }
-}
+};
 
 const getInventory = async () => {
-    const inventory = await db.Inventario.findAll();
-    return {
-        code: 200,
-        message: inventory
-    };
+    try {
+        const inventory = await db.Inventario.findAll();
+        return {
+            code: 200,
+            message: inventory
+        };
+    } catch (error) {
+        console.error('Error al obtener inventario:', error);
+        return {
+            code: 500,
+            message: 'Error al obtener inventario.'
+        };
+    }
 };
 
 export default {
     addProductToInventory,
     getInventory
-}
+};

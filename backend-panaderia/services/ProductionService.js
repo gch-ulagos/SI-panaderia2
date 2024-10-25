@@ -16,7 +16,7 @@ const addProduction = async (productionData) => {
     }
 
     const product = await db.Producto.findOne({
-        where: { name: productId }
+        where: { id: productId }
     });
 
     if (!product) {
@@ -72,7 +72,7 @@ const getProductionById = async (id) => {
 const getAllProductions = async () => {
     const productions = await db.Produccion.findAll({
         include: {
-            model: db.producto,
+            model: db.Producto,
             attributes: ['name']
         }
     });
