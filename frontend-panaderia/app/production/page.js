@@ -115,8 +115,8 @@ export default function Production() {
                 fullWidth
                 margin="normal"
             />
-            <Button onClick={handleCreateProduction} variant="contained" color="primary">
-                Añadir Producción
+            <Button onClick={handleCreateProduction} variant="contained" color="primary" sx={{textTransform:'none'}}>
+                Añadir producción
             </Button>
 
             {/* Tabla de Producciones */}
@@ -195,7 +195,7 @@ export default function Production() {
                             <TableCell>{new Date(production.createdAt).toLocaleDateString()}</TableCell>
                             <TableCell>
                                 {editingProductionId === production.productionId ? (
-                                    <Button onClick={() => handleUpdateProduction(production.productionId)} variant="contained" color="primary">
+                                    <Button onClick={() => handleUpdateProduction(production.productionId)} variant="contained" color="primary" sx={{textTransform:'none'}}>
                                         Aplicar
                                     </Button>
                                 ) : (
