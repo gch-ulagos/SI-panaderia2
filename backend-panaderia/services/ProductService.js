@@ -114,6 +114,15 @@ const updateProduct = async (req) => {
         }
     });
 
+    if (req.body.production !== undefined && req.body.production !== product.production) {
+        const newSource = req.body.production ? 'Producción' : 'Compra';
+
+        await db.Inventario.update(
+            { source: newSource },
+            { where: { id_product: productId } }
+        );
+    }
+
     return {
         code: 200,
         message: 'Product updated successfully'

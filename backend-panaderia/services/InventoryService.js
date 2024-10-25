@@ -2,9 +2,11 @@ import db from '../dist/db/models/index.js';
 
 const addProductToInventory = async (productId, stock) => {
     try {
+        const source = production ? 'Producción' : 'Compra';
+
         await db.Inventario.create({
             id_product: productId,
-            source: 'Productos',
+            source: source,
             stock: stock,
             createdAt: new Date(),
             updatedAt: new Date(),
