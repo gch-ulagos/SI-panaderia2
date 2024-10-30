@@ -13,7 +13,6 @@ export default function ManageCategories() {
     const [successMessage, setSuccessMessage] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
 
-    // Fetch categories on component mount
     const fetchCategories = async () => {
         try {
             const token = localStorage.getItem("token");
@@ -29,14 +28,12 @@ export default function ManageCategories() {
         fetchCategories();
     }, []);
 
-    // Handle changes in input fields
     const handleInputChange = (index, value) => {
         const updatedCategories = [...categories];
         updatedCategories[index].name = value;
         setCategories(updatedCategories);
     };
 
-    // Add new category
     const addCategory = async () => {
         if (!newCategoryName) return;
         try {
@@ -44,15 +41,14 @@ export default function ManageCategories() {
             const response = await CategoryService.createCategory({ name: newCategoryName }, token);
             setSuccessMessage(response.message);
             setErrorMessage(null);
-            setNewCategoryName(''); // Clear input field
-            fetchCategories(); // Refetch categories after creation
+            setNewCategoryName('');
+            fetchCategories();
         } catch (error) {
             setErrorMessage("Error al crear categoría");
             setSuccessMessage(null);
         }
     };
 
-    // Update existing category
     const updateCategory = async (id) => {
         if (!selectedCategory) return;
         try {
@@ -61,23 +57,24 @@ export default function ManageCategories() {
             setSuccessMessage(response.message);
             setErrorMessage(null);
             fetchCategories();
-            setSelectedCategory(null); // Clear selected category
+            setSelectedCategory(null);
         } catch (error) {
             setErrorMessage("Error al actualizar categoría");
             setSuccessMessage(null);
         }
     };
 
-    // Delete a category
     const deleteCategory = async (id) => {
         try {
             const token = localStorage.getItem("token");
             const response = await CategoryService.deleteCategory(id, token);
             setSuccessMessage(response.message);
             setErrorMessage(null);
-            fetchCategories(); // Refetch categories after deletion
+            fetchCategories();
         } catch (error) {
-            setErrorMessage("Error al eliminar categoría");
+            console.error("Error details:", error);
+            const errorMessage = error.response?.data || "Error al eliminar la categoría";
+            setErrorMessage(errorMessage);
             setSuccessMessage(null);
         }
     };

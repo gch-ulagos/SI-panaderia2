@@ -73,6 +73,17 @@ const updateCategory = async (id, categoriaData) => {
 };
 
 const deleteCategory = async (id) => {
+    const productsInCategory = await db.Producto.findOne({
+        where: { category: id }
+    });
+
+    if (productsInCategory) {
+        return {
+            code: 400,
+            message: 'La categoría no puede eliminarse porque hay productos asociados a ella.'
+        };
+    }
+
     const deleted = await db.Categoria.destroy({ where: { id } });
 
     if (!deleted) {
