@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Transacciones.belongsTo(models.Producto, { foreignKey: 'id_product' });
+      Transacciones.belongsTo(models.Archivo, { foreignKey: 'voucher' });
     }
   }
   Transacciones.init({

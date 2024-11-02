@@ -29,7 +29,13 @@ module.exports = {
         type: Sequelize.DOUBLE
       },
       voucher: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        references: {
+          model: 'Archivo',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       createdAt: {
         allowNull: false,
