@@ -35,7 +35,8 @@ const uploadFile = (req, res) => {
                 const filePath = path.join(uploadFolder, req.file.filename);
 
                 const newFileRecord = await db.Archivo.create({
-                    ruta: filePath
+                    route: filePath,
+                    name: req.file.filename
                 });
 
                 resolve({
@@ -58,7 +59,7 @@ const deleteFile = async (fileId) => {
             return { code: 404, message: 'Archivo no encontrado en la base de datos' };
         }
 
-        const filePath = fileRecord.ruta;
+        const filePath = fileRecord.route;
         fs.unlinkSync(filePath);
 
         await db.Archivo.destroy({ where: { id: fileId } });
@@ -77,7 +78,7 @@ const updateFile = (req, res, fileId) => {
                 return reject({ code: 404, message: 'Archivo no encontrado en la base de datos' });
             }
 
-            fs.unlinkSync(existingFileRecord.ruta);
+            fs.unlinkSync(existingFileRecord.route);
 
             upload(req, res, async (err) => {
                 if (err) {
@@ -88,7 +89,7 @@ const updateFile = (req, res, fileId) => {
                     const newFilePath = path.join(uploadFolder, req.file.filename);
 
                     await db.Archivo.update(
-                        { ruta: newFilePath },
+                        { route: newFilePath },
                         { where: { id: fileId } }
                     );
 
@@ -108,8 +109,20 @@ const updateFile = (req, res, fileId) => {
     });
 };
 
+const getAllFiles = async () => {
+    try {
+        const files = await db.Archivo.findAll({
+            attributes: ['id', 'route','name'],
+        });
+        return { code: 200, message: 'Archivos obtenidos correctamente', files };
+    } catch (error) {
+        return { code: 500, message: 'Error al obtener los archivos', error: error.message };
+    }
+};
+
 export default {
     uploadFile,
     deleteFile,
-    updateFile
+    updateFile,
+    getAllFiles
 };

@@ -23,16 +23,17 @@
       "static/css/app/inventory/page.css",
       "static/chunks/app/inventory/page.js"
     ],
-    "/production/page": [
+    "/inventory/bulkCreate/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/production/page.css",
-      "static/chunks/app/production/page.js"
+      "static/css/app/inventory/bulkCreate/page.css",
+      "static/chunks/app/inventory/bulkCreate/page.js"
     ],
-    "/_not-found/page": [
+    "/inventory/file/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/_not-found/page.js"
+      "static/css/app/inventory/file/page.css",
+      "static/chunks/app/inventory/file/page.js"
     ]
   }
 }

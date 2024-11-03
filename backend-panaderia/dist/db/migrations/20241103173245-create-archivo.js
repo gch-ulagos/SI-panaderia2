@@ -12,6 +12,9 @@ module.exports = {
       route: {
         type: Sequelize.STRING
       },
+      name: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

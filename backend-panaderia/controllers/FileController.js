@@ -4,6 +4,21 @@ import AuthMiddleware from '../middlewares/auth.middleware.js';
 
 const router = Router();
 
+
+router.get('/getAllFiles', 
+    [
+        AuthMiddleware.validateToken,
+    ],
+    async (req, res) => {
+        try {
+            const response = await FileService.getAllFiles();
+            res.status(response.code).json({ message: response.message, files: response.files });
+        } catch (error) {
+            res.status(500).json({ message: 'Error al obtener archivos' });
+        }
+    }
+);
+
 router.post('/upload',
     [
         AuthMiddleware.validateToken,

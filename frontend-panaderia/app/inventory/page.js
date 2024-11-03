@@ -109,6 +109,7 @@ export default function Inventory() {
             <Button onClick={() => router.push('/inventory/bulkCreate')} sx={{ textTransform: 'none' }}>Insertar productos</Button>
             <Button onClick={() => router.push('/inventory/Category')} sx={{ textTransform: 'none' }}>Categorías</Button>
             <Button onClick={() => router.push('/production')} sx={{textTransform:'none'}}>Producción</Button>
+            <Button onClick={() => router.push('/inventory/file')} sx={{textTransform:'none'}}>Subir archivo</Button>
             
             <TextField
                 label="Buscar producto"

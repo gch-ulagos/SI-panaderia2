@@ -10,11 +10,12 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Archivo.hasMany(models.Transacciones, { foreignKey: 'voucher' });
+      // define association here
     }
   }
   Archivo.init({
-    route: DataTypes.STRING
+    route: DataTypes.STRING,
+    name: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Archivo',
