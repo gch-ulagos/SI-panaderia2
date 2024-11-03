@@ -1,7 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import multer from 'multer';
-import db from '../models/index.js';
+import db from '../dist/db/models/index.js';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const uploadFolder = path.join(__dirname, './public');
 
