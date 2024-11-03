@@ -7,12 +7,12 @@ import { useRouter } from 'next/navigation';
 export default function Home() {
     const router = useRouter();
 
-    useEffect(() => {
+    /*useEffect(() => {
         const user = localStorage.getItem('user');
         if (user) {
             router.push('/users');
         }
-    }, []);
+    }, []);*/
 
     return (
         <Container maxWidth="sm">

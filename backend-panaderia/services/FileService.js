@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const uploadFolder = path.join(__dirname, './public');
+const uploadFolder = path.join(__dirname, '../public');
 
 if (!fs.existsSync(uploadFolder)) {
     fs.mkdirSync(uploadFolder, { recursive: true });
@@ -89,7 +89,9 @@ const updateFile = (req, res, fileId) => {
                     const newFilePath = path.join(uploadFolder, req.file.filename);
 
                     await db.Archivo.update(
-                        { route: newFilePath },
+                        { route: newFilePath,
+                            name: req.file.filename
+                        },
                         { where: { id: fileId } }
                     );
 
