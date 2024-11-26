@@ -8,6 +8,7 @@ import ProductionController from './controllers/ProductionController.js';
 import CategoryController from './controllers/CategoryController.js';
 import InventoryController from './controllers/InventoryController.js';
 import FileController from './controllers/FileController.js';
+import TransactionController from './controllers/TransactionController.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -32,6 +33,7 @@ app.use('/api/v1/products', ProductController);
 app.use('/api/v1/production', ProductionController);
 app.use('/api/v1/file', FileController);
 app.use('/api/v1/inventory', InventoryController);
+app.use('/api/v1/transaction', TransactionController);
 app.use('/api/v1/auth', AuthController);
 
 app.use('/files', express.static(path.join(__dirname, 'public')));

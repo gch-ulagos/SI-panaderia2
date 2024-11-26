@@ -2,18 +2,18 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Archivo', {
+    await queryInterface.createTable('TransactionTotals', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      route: {
-        type: Sequelize.STRING
+      id_transaction: {
+        type: Sequelize.INTEGER,
       },
-      name: {
-        type: Sequelize.STRING
+      total: {
+        type: Sequelize.FLOAT
       },
       createdAt: {
         allowNull: false,
@@ -26,6 +26,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Archivo');
+    await queryInterface.dropTable('TransactionTotals');
   }
 };

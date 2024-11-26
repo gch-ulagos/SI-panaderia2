@@ -10,11 +10,15 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       id_product: {
+        primaryKey: true,
         type: Sequelize.INTEGER,
         references: {
           model: 'Producto',
           key: 'id',
         }
+      },
+      id_transactions: {
+        type: Sequelize.INTEGER,
       },
       measure_type: {
         type: Sequelize.STRING

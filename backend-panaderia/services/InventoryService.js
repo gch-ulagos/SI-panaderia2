@@ -2,10 +2,8 @@ import db from '../dist/db/models/index.js';
 
 const addProductToInventory = async (productId, stock, production = true) => {
     try {
-        // Determina la fuente de la entrada de inventario
         const source = production ? 'Producción' : 'Compra';
 
-        // Crea un nuevo registro en la tabla de inventario
         await db.Inventario.create({
             id_product: productId,
             source: source,

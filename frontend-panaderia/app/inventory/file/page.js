@@ -1,7 +1,7 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-import { Container, Button, Typography, Alert, AlertTitle, Table, TableBody, TableCell, TableHead, TableRow, IconButton } from '@mui/material';
-import { Edit as EditIcon, Delete as DeleteIcon, Visibility as VisibilityIcon } from '@mui/icons-material'; // Importar el ícono de visibilidad
+import React, { useState, useEffect, useRef } from 'react';
+import { Container, Button, Typography, Alert, AlertTitle, Table, TableBody, TableCell, TableHead, TableRow, IconButton, Popover } from '@mui/material';
+import { Edit as EditIcon, Delete as DeleteIcon, Visibility as VisibilityIcon, Check as CheckIcon, Close as CloseIcon } from '@mui/icons-material';
 import Navbar from '../../../components/Navbar';
 import FileService from '../../../services/FileService';
 
@@ -55,18 +55,33 @@ export default function ManageFiles() {
         }
     };
 
-    const deleteFile = async (id) => {
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [fileToDelete, setFileToDelete] = useState(null);
+
+    const confirmDeleteFile = async () => {
+        if (!fileToDelete) return;
         try {
             const token = localStorage.getItem("token");
-            const response = await FileService.deleteFile(id, token);
+            const response = await FileService.deleteFile(fileToDelete.id, token);
             setSuccessMessage(response.message);
             setErrorMessage(null);
             fetchFiles();
+            handlePopoverClose();
         } catch (error) {
             setErrorMessage("Error al eliminar archivo");
             setSuccessMessage(null);
         }
     };
+
+    const handlePopoverOpen = (event, file) => {
+        setAnchorEl(event.currentTarget);
+        setFileToDelete(file);
+    };
+
+    const handlePopoverClose = () => {
+        setAnchorEl(null);
+        setFileToDelete(null);
+    } 
 
     const editFile = (file) => {
         setFileToEdit(file);
@@ -104,17 +119,50 @@ export default function ManageFiles() {
                 </Alert>
             )}
 
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-                <input type="file" onChange={handleFileChange} />
-                <Button 
-                    variant="contained" 
-                    color="primary" 
-                    onClick={uploadFile} 
-                    style={{ marginLeft: '10px', textTransform: 'none' }}
-                >
-                    {fileToEdit ? "Actualizar archivo" : "Subir archivo"}
-                </Button>
-            </div>
+        <div style={{ textAlign: 'center', marginTop: '20px' }}>
+            {!selectedFile ? (
+                <>
+                    <input
+                        type="file"
+                        id="fileInput"
+                        style={{ display: 'none' }}
+                        onChange={handleFileChange}
+                    />
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => document.getElementById('fileInput').click()}
+                    >
+                        Seleccionar archivo
+                    </Button>
+                </>
+            ) : (
+                <>
+                    <Typography variant="body1" gutterBottom>
+                        Archivo seleccionado: {selectedFile.name}
+                    </Typography>
+                    <div style={{ marginTop: '10px' }}>
+                        <Button
+                            variant="outlined"
+                            color="secondary"
+                            style={{ marginRight: '10px' }}
+                            onClick={() => {
+                                setSelectedFile(null);
+                            }}
+                        >
+                            Cambiar archivo
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={uploadFile}
+                        >
+                            Subir archivo
+                        </Button>
+                    </div>
+                </>
+            )}
+        </div>
 
             <Table>
                 <TableHead>
@@ -133,7 +181,7 @@ export default function ManageFiles() {
                                 <IconButton color="primary" onClick={() => editFile(file)}>
                                     <EditIcon />
                                 </IconButton>
-                                <IconButton color="error" onClick={() => deleteFile(file.id)}>
+                                <IconButton color="error" onClick={(event) => handlePopoverOpen(event, file)}>
                                     <DeleteIcon />
                                 </IconButton>
                                 <IconButton color="default" onClick={() => viewFile(file)}>
@@ -144,6 +192,42 @@ export default function ManageFiles() {
                     ))}
                 </TableBody>
             </Table>
+
+            <Popover
+                open={Boolean(anchorEl)}
+                anchorEl={anchorEl}
+                onClose={handlePopoverClose}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                transformOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }}
+            >
+                <div style={{ padding: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <Typography variant="body1" style={{ marginRight: '10px' }}>
+                    ¿Desea eliminar el archivo?
+                    </Typography>
+                    <Button
+                        variant="contained"
+                        color="success"
+                        style={{ marginRight: '10px' }}
+                        onClick={confirmDeleteFile}
+                    >
+                    <CheckIcon style={{ marginRight: '5px' }} />
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="error"
+                        onClick={handlePopoverClose}
+                    >
+                    <CloseIcon style={{ marginRight: '5px' }} />
+                    </Button>
+                </div>
+            </Popover>
+
         </Container>
     );
 }
