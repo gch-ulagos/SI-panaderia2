@@ -29,6 +29,18 @@
       "static/css/app/inventory/page.css",
       "static/chunks/app/inventory/page.js"
     ],
+    "/production/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/production/page.css",
+      "static/chunks/app/production/page.js"
+    ],
+    "/inventory/file/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/inventory/file/page.css",
+      "static/chunks/app/inventory/file/page.js"
+    ],
     "/inventory/bulkCreate/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
