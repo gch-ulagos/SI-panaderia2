@@ -40,6 +40,18 @@ export default function TransactionsPage() {
         }
     };
 
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleString("es-ES", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+        });
+    };
+
     const filteredData = {
         transaction: Array.isArray(ghostTransactions.transaction) ? 
             ghostTransactions.transaction.filter((transaction) =>
@@ -83,8 +95,7 @@ export default function TransactionsPage() {
                         <TableRow>
                             <TableCell>{ghostTransaction.id}</TableCell>
                             <TableCell>{ghostTransaction.transaction_type}</TableCell>
-                            <TableCell>{ghostTransaction.createdAt}</TableCell>
-                            <TableCell>-</TableCell>
+                            <TableCell>{formatDate(ghostTransaction.createdAt)}</TableCell>
                             <TableCell>
                                 <IconButton
                                     color="primary"
