@@ -10,6 +10,7 @@ import InventoryController from './controllers/InventoryController.js';
 import FileController from './controllers/FileController.js';
 import TransactionController from './controllers/TransactionController.js';
 import OrderController from './controllers/OrderController.js';
+import ProviderController from './controllers/ProviderController.js';
 import ExcelController from './controllers/ExcelController.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -38,6 +39,7 @@ app.use('/api/v1/production', ProductionController);
 app.use('/api/v1/file', FileController);
 app.use('/api/v1/inventory', InventoryController);
 app.use('/api/v1/transaction', TransactionController);
+app.use('/api/v1/providers', ProviderController);
 app.use('/api/v1/auth', AuthController);
 
 app.use('/files', express.static(path.join(__dirname, 'public')));

@@ -17,39 +17,23 @@
       "static/css/app/login/page.css",
       "static/chunks/app/login/page.js"
     ],
+    "/register/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/register/page.css",
+      "static/chunks/app/register/page.js"
+    ],
     "/inventory/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/inventory/page.css",
       "static/chunks/app/inventory/page.js"
     ],
-<<<<<<< HEAD
-    "/transaction/page": [
-=======
-    "/production/page": [
+    "/providers/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/production/page.css",
-      "static/chunks/app/production/page.js"
-    ],
-    "/inventory/file/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/inventory/file/page.css",
-      "static/chunks/app/inventory/file/page.js"
-    ],
-    "/inventory/bulkCreate/page": [
->>>>>>> origin/Excel
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/transaction/page.css",
-      "static/chunks/app/transaction/page.js"
-    ],
-    "/transaction/bulkCreate/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/transaction/bulkCreate/page.css",
-      "static/chunks/app/transaction/bulkCreate/page.js"
+      "static/css/app/providers/page.css",
+      "static/chunks/app/providers/page.js"
     ]
   }
 }

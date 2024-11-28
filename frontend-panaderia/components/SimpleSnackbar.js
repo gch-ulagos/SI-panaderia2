@@ -8,11 +8,9 @@ const SimpleSnackbar = (props) => {
     const { message, openSnack, closeSnack } = props;
 
     const handleClose = (event, reason) => {
-        event.preventDefault();
         if (reason === 'clickaway') {
             return;
         }
-
         closeSnack();
     };
 
@@ -38,6 +36,6 @@ const SimpleSnackbar = (props) => {
             //action={action}
         />
     );
-}
+};
 
 export default SimpleSnackbar;
