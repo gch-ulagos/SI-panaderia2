@@ -6,6 +6,16 @@ import ProductionService from '@/services/ProductionService';
 import ProductService from '@/services/ProductService';
 import { useRouter } from 'next/navigation';
 import Navbar from '../../components/Navbar';
+import {
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    Legend,
+    ResponsiveContainer,
+  } from 'recharts';
 
 export default function Production() {
     const [productions, setProductions] = useState([]);
@@ -15,12 +25,18 @@ export default function Production() {
     const [editingProductionId, setEditingProductionId] = useState(null); // Estado para manejar la edición
     const [updatedData, setUpdatedData] = useState({}); // Para almacenar los datos actualizados
     const router = useRouter();
-
+    const [chartData, setChartData] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
+    const [selectedProduct, setSelectedProduct] = useState(''); // Estado para el filtro de producto
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
         setToken(storedToken);
         fetchProductions(storedToken);
         fetchProductsForProduction(storedToken);
+        loadChartData(storedToken);
+        
     }, []);
 
     const fetchProductions = async (token) => {
@@ -37,6 +53,55 @@ export default function Production() {
         }
     };
 
+    const loadChartData = async (token) => {
+        const data = await ProductionService.getAllProductions(token);
+        const formatDate = (date) => new Date(date).toISOString().split('T')[0];
+        const transformData = (data) => {
+            return data.map(item => ({
+                name: item.productId, 
+                quantity: item.quantity, 
+                createdAt: formatDate(item.createdAt), 
+              }));
+            };
+        const transformedData = transformData(data);
+        setChartData(transformedData);
+        setFilteredData(transformedData);
+        console.log("Data from API:", transformedData);
+      };
+
+
+      useEffect(() => {
+        const filterData = () => {
+          let data = chartData;
+          console.log("Start Date:", startDate);
+          console.log("End Date:", endDate);
+          console.log("Data Before Filtering:", chartData);
+          // Filtro por nombre del producto
+          if (selectedProduct) {
+            data = data.filter((item) => item.name === selectedProduct);
+          }
+    
+          // Filtro por rango de fechas
+          if (startDate) {
+            data = data.filter((item) => item.createdAt >= startDate); 
+            console.log("Filtered data (after startDate):", data);
+          }
+          if (endDate) {
+            data = data.filter((item) => item.createdAt <= endDate);
+            console.log("Filtered data (after endDate):", data);
+          }
+    
+          setFilteredData(data);
+          
+        };
+    
+        filterData();
+      }, [selectedProduct, startDate, endDate, chartData]);
+      
+      const getUniqueProducts = () => {
+        const products = chartData.map((item) => item.name);
+        return [...new Set(products)]; // Eliminar duplicados
+      };
     const handleCreateProduction = async () => {
         await ProductionService.createProduction(newProduction, token);
         fetchProductions(token);
@@ -211,6 +276,44 @@ export default function Production() {
                     ))}
                 </TableBody>
             </Table>
+            
+            <div>
+      <div style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
+        <select onChange={(e) => setSelectedProduct(e.target.value)} value={selectedProduct}>
+          <option value="">Todos los productos</option>
+          {getUniqueProducts().map((product) => (
+            <option key={product} value={product}>
+              {product}
+            </option>
+          ))}
+        </select>
+
+        <input
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+          placeholder="Fecha de inicio"
+        />
+
+        <input
+          type="date"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+          placeholder="Fecha de fin"
+        />
+      </div>
+
+      <ResponsiveContainer width="100%" height={400}>
+        <BarChart data={filteredData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="quantity" fill="#8884d8" />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
         </Container>
     );
 }
