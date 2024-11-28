@@ -23,7 +23,23 @@
       "static/css/app/inventory/page.css",
       "static/chunks/app/inventory/page.js"
     ],
+<<<<<<< HEAD
     "/transaction/page": [
+=======
+    "/production/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/production/page.css",
+      "static/chunks/app/production/page.js"
+    ],
+    "/inventory/file/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/inventory/file/page.css",
+      "static/chunks/app/inventory/file/page.js"
+    ],
+    "/inventory/bulkCreate/page": [
+>>>>>>> origin/Excel
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/transaction/page.css",
