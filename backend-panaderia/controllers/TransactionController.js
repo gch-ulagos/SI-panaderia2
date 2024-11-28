@@ -27,6 +27,19 @@ router.post(
     }
 );
 
+
+router.get(
+    '/getGhostTransactions',
+    [
+        AuthMiddleware.validateToken,
+    ],
+    async (req, res) => {
+        const response = await TransactionService.getGhostTransactions();
+        res.status(response.code).json(response.message);
+    }
+);
+
+
 router.get(
     '/getAllTransactions',
     [

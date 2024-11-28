@@ -1,9 +1,8 @@
 {
-  "/login/page": "app/login/page.js",
-  "/page": "app/page.js",
-  "/register/page": "app/register/page.js",
-  "/inventory/page": "app/inventory/page.js",
-  "/inventory/bulkCreate/page": "app/inventory/bulkCreate/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/inventory/Category/page": "app/inventory/Category/page.js"
+  "/login/page": "app/login/page.js",
+  "/inventory/page": "app/inventory/page.js",
+  "/transaction/page": "app/transaction/page.js",
+  "/transaction/bulkCreate/page": "app/transaction/bulkCreate/page.js"
 }

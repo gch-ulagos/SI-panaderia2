@@ -17,34 +17,28 @@
       "static/css/app/login/page.css",
       "static/chunks/app/login/page.js"
     ],
-    "/register/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/register/page.css",
-      "static/chunks/app/register/page.js"
-    ],
     "/inventory/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/inventory/page.css",
       "static/chunks/app/inventory/page.js"
     ],
-    "/inventory/bulkCreate/page": [
+    "/transaction/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/inventory/bulkCreate/page.css",
-      "static/chunks/app/inventory/bulkCreate/page.js"
+      "static/css/app/transaction/page.css",
+      "static/chunks/app/transaction/page.js"
     ],
-    "/inventory/Category/page": [
+    "/transaction/bulkCreate/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/inventory/Category/page.css",
-      "static/chunks/app/inventory/Category/page.js"
+      "static/css/app/transaction/bulkCreate/page.css",
+      "static/chunks/app/transaction/bulkCreate/page.js"
     ],
-    "/inventory/[id]/edit/page": [
+    "/_not-found/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/inventory/[id]/edit/page.js"
+      "static/chunks/app/_not-found/page.js"
     ]
   }
 }

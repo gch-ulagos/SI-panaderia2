@@ -1,3 +1,4 @@
+import { transform } from '@babel/core';
 import db from '../dist/db/models/index.js';
 
 const createTransaction = async (transactionData) => {
@@ -39,20 +40,41 @@ const createTransaction = async (transactionData) => {
 
 const getTransactionById = async (id) => {
     const transaction = await db.Transacciones.findAll({
-        where: { id },
-        include: [
-            {
-                model: db.Producto,
-                as: 'product',
-            },
-        ],
+        where: { id_transactions: id },
+    });
+
+    const transactionTotal = await db.TransactionTotal.findAll({
+        where: { id_transaction: id },
     });
 
     if (!transaction.length) {
         return { code: 404, message: 'Transaccion no encontrada' };
     }
 
-    return { code: 200, message: transaction };
+    return { code: 200, message: {transaction: transaction,
+        transactionTotal: transactionTotal}
+    };
+};
+
+const getGhostTransactions = async () => {
+    const transaction = await db.Transacciones.findAll({
+        where: { price: null },
+    });
+
+    const transactionTotals = await db.TransactionTotal.findAll({
+        where: {
+            id_transaction: transaction.map((t) => t.id),
+        },
+    });
+
+    if (!transaction.length) {
+        return { code: 404, message: 'Transaccion no encontrada' };
+    }
+
+    return { code: 200, message: {transaction: transaction,
+        transactionTotals: transactionTotals
+    }
+    };
 };
 
 const updateTransaction = async (id, transactionData) => {
@@ -134,8 +156,35 @@ const deleteTransaction = async (id) => {
 };
 
 const getAllTransactions = async () => {
-    const transactions = await db.Transacciones.findAll();
-    return { code: 200, message: transactions };
+    try {
+        const ghostTransactions = await db.Transacciones.findAll({
+            where: {
+                price: null,
+            },
+        });
+
+        if (!ghostTransactions.length) {
+            return { code: 404, message: 'No se encontraron transacciones fantasmas' };
+        }
+
+        const realTransactions = [];
+        for (let ghost of ghostTransactions) {
+            const realTransaction = await db.Transacciones.findAll({
+                where: {
+                    id_transactions: ghost.id,
+                },
+            });
+
+            if (realTransaction.length) {
+                realTransactions.push(...realTransaction);
+            }
+        }
+
+        return { code: 200, message: realTransactions };
+    } catch (error) {
+        console.error('Error fetching transactions:', error);
+        return { code: 500, message: 'Error fetching transactions' };
+    }
 };
 
 const bulkCreateTransactions = async (transactions) => {
@@ -224,5 +273,6 @@ export default {
     deleteTransaction,
     getAllTransactions,
     bulkCreateTransactions,
+    getGhostTransactions,
 };
 

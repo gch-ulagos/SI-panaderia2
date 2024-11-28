@@ -13,7 +13,6 @@ export default function BulkCreateProducts() {
     const [successMessage, setSuccessMessage] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
 
-    // Fetch categories on component mount
     useEffect(() => {
         const fetchCategories = async () => {
             try {
@@ -43,20 +42,18 @@ export default function BulkCreateProducts() {
         try {
             const token = localStorage.getItem("token");
 
-            // Convert price and stock to numbers
             const formattedProducts = products.map(product => ({
                 ...product,
-                price: Number(product.price),  // Convert to number
-                stock: Number(product.stock)   // Convert to number
+                price: Number(product.price),
+                stock: Number(product.stock)
             }));
 
             console.log('enviando:', formattedProducts);
             const response = await ProductService.bulkCreate(formattedProducts, token);
             setSuccessMessage(response.message);
             setErrorMessage(null);
-            setProductsData([]); // Reiniciar formulario
+            setProductsData([]);
 
-            // Redirigir a la página de inventario
             router.push('/inventory');
         } catch (error) {
             setErrorMessage(error.message || 'Error al crear producto');

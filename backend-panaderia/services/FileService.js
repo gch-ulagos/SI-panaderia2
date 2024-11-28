@@ -118,7 +118,7 @@ const getAllFiles = async () => {
         });
         return { code: 200, message: 'Archivos obtenidos correctamente', files };
     } catch (error) {
-        return { code: 500, message: 'Error al obtener los archivos', error: error.message };
+        return { code: 500, message: error.message };
     }
 };
 

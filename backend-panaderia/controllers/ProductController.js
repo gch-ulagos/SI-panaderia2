@@ -46,18 +46,18 @@ router.get('/getAllProducts',
 );
 
 router.get('/getAllProductsForProduction', async (req, res) => {
-    const token = req.headers.token; // Manejar autenticación si es necesario
+    const token = req.headers.token;
 
     try {
         const products = await Producto.findAll({
             where: {
-                production: true // Filtrar por producción true
+                production: true
             }
         });
         res.json(products);
     } catch (error) {
-        console.error('Error al obtener productos:', error); // Imprimir el error en consola
-        res.status(500).json({ message: 'Error al obtener productos', error: error.message || error }); // Enviar mensaje de error
+        console.error('Error al obtener productos:', error);
+        res.status(500).json({ message: 'Error al obtener productos', error: error.message || error });
     }
 });
 
