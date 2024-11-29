@@ -32,8 +32,42 @@
     "/providers/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
+<<<<<<< HEAD
       "static/css/app/providers/page.css",
       "static/chunks/app/providers/page.js"
+=======
+      "static/css/app/production/page.css",
+      "static/chunks/app/production/page.js"
+    ],
+    "/inventory/file/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/inventory/file/page.css",
+      "static/chunks/app/inventory/file/page.js"
+    ],
+    "/inventory/bulkCreate/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/inventory/bulkCreate/page.css",
+      "static/chunks/app/inventory/bulkCreate/page.js"
+    ],
+    "/inventory/Category/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/inventory/Category/page.css",
+      "static/chunks/app/inventory/Category/page.js"
+    ],
+    "/inventory/[id]/edit/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/inventory/[id]/edit/page.js"
+    ],
+    "/inventory/Orders/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/inventory/Orders/page.css",
+      "static/chunks/app/inventory/Orders/page.js"
+>>>>>>> origin/Excel
     ]
   }
 }

@@ -1,4 +1,10 @@
 {
+<<<<<<< HEAD
+=======
+  "/inventory/page": "app/inventory/page.js",
+  "/production/page": "app/production/page.js",
+  "/inventory/Orders/page": "app/inventory/Orders/page.js",
+>>>>>>> origin/Excel
   "/page": "app/page.js",
   "/login/page": "app/login/page.js",
   "/inventory/page": "app/inventory/page.js",

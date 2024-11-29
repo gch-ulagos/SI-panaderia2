@@ -14,10 +14,10 @@ export default function Inventory() {
     const router = useRouter();
     const [users, setUsers] = useState([]);
     const [products, setProducts] = useState([]);
-    const [categories, setCategories] = useState([]);
+    const [categories, setCategories] = useState([]); // Nueva variable de estado para categorías
     const [searchTerm, setSearchTerm] = useState("");
-    const [selectedCategory, setSelectedCategory] = useState(""); 
-    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+    const [selectedCategory, setSelectedCategory] = useState(""); // Estado para la categoría seleccionada
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' }); // Configuración de ordenación
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem('user'));
@@ -77,11 +77,13 @@ export default function Inventory() {
             (selectedCategory === "" || product.category === selectedCategory)
         );
 
+    // Función para obtener el nombre de la categoría por ID
     const getCategoryName = (categoryId) => {
         const category = categories.find((cat) => cat.id === categoryId);
         return category ? category.name : 'Sin categoría';
     }
 
+    // Función para ordenar productos
     const handleSort = (key) => {
         let direction = 'asc';
         if (sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -108,9 +110,7 @@ export default function Inventory() {
             <Button onClick={() => router.push('/inventory/Category')} sx={{ textTransform: 'none' }}>Categorías</Button>
             <Button onClick={() => router.push('/production')} sx={{textTransform:'none'}}>Producción</Button>
             <Button onClick={() => router.push('/inventory/file')} sx={{textTransform:'none'}}>Subir archivo</Button>
-            <Button onClick={() => router.push('/transaction')} sx={{textTransform:'none'}}>Transacciones</Button>
-            <Button onClick={() => router.push('/providers')} sx={{textTransform:'none'}}>Proveedores</Button>
-            
+            <Button onClick={() => router.push('/inventory/Orders')} sx={{textTransform:'none'}}>Pedidos</Button>
             <TextField
                 label="Buscar producto"
                 variant="outlined"
