@@ -1,23 +1,25 @@
-"use client"
-import React, {useEffect, useState} from 'react';
-import {Container, Table, TableBody, TableCell, TableHead, TableRow, TextField, Button, Select, MenuItem} from "@mui/material";
+"use client";
+import React, { useEffect, useState } from 'react';
+import { Container, Table, TableBody, TableCell, TableHead, TableRow, TextField, Button, Select, MenuItem } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
-import {Edit} from "@mui/icons-material";
+import { Edit } from "@mui/icons-material";
 import AuthService from "../../services/AuthService";
 import ProductService from '@/services/ProductService';
 import CategoryService from '@/services/CategoryService';
+import ExcelService from "@/services/ExcelService";
 import { useRouter } from 'next/navigation';
 import Navbar from '../../components/Navbar';
 
 export default function Inventory() {
-
     const router = useRouter();
     const [users, setUsers] = useState([]);
     const [products, setProducts] = useState([]);
-    const [categories, setCategories] = useState([]); // Nueva variable de estado para categorías
-    const [searchTerm, setSearchTerm] = useState("");
-    const [selectedCategory, setSelectedCategory] = useState(""); // Estado para la categoría seleccionada
-    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' }); // Configuración de ordenación
+    const [categories, setCategories] = useState([]);
+    const [name, setName] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState("");
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+    const [successMessage, setSuccessMessage] = useState(null);
+    const [errorMessage, setErrorMessage] = useState(null);
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem('user'));
@@ -41,13 +43,13 @@ export default function Inventory() {
         const token = localStorage.getItem("token");
         const data = await AuthService.getUsers(token);
         setUsers(data);
-    }
+    };
 
     const getUser = async (id) => {
         const token = localStorage.getItem('token');
         const data = await AuthService.getUserById(id, token);
         setUsers([data]);
-    }
+    };
 
     const getAllProducts = async (token) => {
         try {
@@ -56,7 +58,7 @@ export default function Inventory() {
         } catch (e) {
             console.error("Error fetching products", e);
         }
-    }
+    };
 
     const getAllCategories = async (token) => {
         try {
@@ -65,25 +67,22 @@ export default function Inventory() {
         } catch (e) {
             console.error("Error fetching categories", e);
         }
-    }
+    };
 
     const handleEdit = (product) => {
         router.push('/inventory/' + product.id + '/edit');
-    }
+    };
 
-    const filteredProducts = products
-        .filter((product) =>
-            product.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-            (selectedCategory === "" || product.category === selectedCategory)
-        );
+    const filteredProducts = products.filter((product) =>
+        product.name.toLowerCase().includes(name.toLowerCase()) &&
+        (selectedCategory === "" || product.category === selectedCategory)
+    );
 
-    // Función para obtener el nombre de la categoría por ID
     const getCategoryName = (categoryId) => {
         const category = categories.find((cat) => cat.id === categoryId);
         return category ? category.name : 'Sin categoría';
-    }
+    };
 
-    // Función para ordenar productos
     const handleSort = (key) => {
         let direction = 'asc';
         if (sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -102,25 +101,68 @@ export default function Inventory() {
         return 0;
     });
 
+    const DownloadAllProducts = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            await ExcelService.getAllProducts(token);
+            setSuccessMessage("Archivo de productos descargado exitosamente.");
+            setErrorMessage(null);
+        } catch (error) {
+            console.error("Error al descargar productos:", error);
+            setErrorMessage("No se pudo descargar el archivo de productos.");
+            setSuccessMessage(null);
+        }
+    };
+
+    const DownloadFilteredProducts = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            let url = `http://localhost:3001/api/v1/Excel/getFilteredProducts`;
+            const queryParams = [];
+            if (name) queryParams.push(`name=${encodeURIComponent(name)}`);
+            if (selectedCategory) {
+                const categoryName = getCategoryName(selectedCategory);
+                if (categoryName !== 'Sin categoría') {
+                    queryParams.push(`category=${encodeURIComponent(categoryName)}`);
+                }
+            }
+
+            if (queryParams.length > 0) {
+                url += `?${queryParams.join("&")}`;
+            }
+
+            console.log("Enviando solicitud GET a la URL:", url);
+
+            await ExcelService.getFilteredProducts(url, token);
+            setSuccessMessage("Archivo de productos filtrados descargado exitosamente.");
+            setErrorMessage(null);
+        } catch (error) {
+            console.error("Error al descargar productos filtrados:", error);
+            setErrorMessage("No se pudo descargar el archivo de productos filtrados. Inténtalo nuevamente.");
+            setSuccessMessage(null);
+        }
+    };
+
     return (
         <Container>
             <Navbar />
             <h1>Inventario</h1>
             <Button onClick={() => router.push('/inventory/bulkCreate')} sx={{ textTransform: 'none' }}>Insertar productos</Button>
             <Button onClick={() => router.push('/inventory/Category')} sx={{ textTransform: 'none' }}>Categorías</Button>
-            <Button onClick={() => router.push('/production')} sx={{textTransform:'none'}}>Producción</Button>
-            <Button onClick={() => router.push('/inventory/file')} sx={{textTransform:'none'}}>Subir archivo</Button>
-            <Button onClick={() => router.push('/inventory/Orders')} sx={{textTransform:'none'}}>Pedidos</Button>
+            <Button onClick={() => router.push('/production')} sx={{ textTransform: 'none' }}>Producción</Button>
+            <Button onClick={() => router.push('/inventory/file')} sx={{ textTransform: 'none' }}>Subir archivo</Button>
+            <Button variant="contained" color="primary" onClick={DownloadAllProducts} style={{ margin: "10px", textTransform: 'none' }}> Descargar Todos los Productos </Button>
+            <Button variant="contained" color="secondary" onClick={DownloadFilteredProducts} style={{ margin: "10px", textTransform: 'none' }}> Descargar Productos Filtrados </Button>
+            
             <TextField
-                label="Buscar producto"
+                label="Buscar producto por nombre"
                 variant="outlined"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 fullWidth
                 margin="normal"
             />
 
-            {/* Filtro por Categorías */}
             <Select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
@@ -141,19 +183,13 @@ export default function Inventory() {
             <Table>
                 <TableHead>
                     <TableRow>
-                        {/* Ordenar por ID */}
                         <TableCell onClick={() => handleSort('id')}>
-                            <Button>
-                                ID {sortConfig.key === 'id' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}
-                            </Button>
+                            <Button>ID {sortConfig.key === 'id' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}</Button>
                         </TableCell>
                         <TableCell>Nombre del producto</TableCell>
                         <TableCell>Categoría</TableCell>
-                        {/* Ordenar por Stock */}
                         <TableCell onClick={() => handleSort('stock')}>
-                            <Button sx={{ textTransform: 'none' }}>
-                                Stock {sortConfig.key === 'stock' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}
-                            </Button>
+                            <Button>Stock {sortConfig.key === 'stock' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}</Button>
                         </TableCell>
                         <TableCell>Medida</TableCell>
                         <TableCell>Producción local</TableCell>
@@ -161,23 +197,21 @@ export default function Inventory() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {
-                        sortedProducts.map((product) => (
-                            <TableRow key={product.id}>
-                                <TableCell>{product.id}</TableCell>
-                                <TableCell>{product.name}</TableCell>
-                                <TableCell>{getCategoryName(product.category)}</TableCell>
-                                <TableCell>{product.stock}</TableCell>
-                                <TableCell>{product.measure_type}</TableCell>
-                                <TableCell>{product.production ? "Sí" : "No"}</TableCell>
-                                <TableCell>
-                                    <IconButton color="primary" aria-label={"Editar producto " + product.id} onClick={() => handleEdit(product)}>
-                                        <Edit />
-                                    </IconButton>
-                                </TableCell>
-                            </TableRow>
-                        ))
-                    }
+                    {sortedProducts.map((product) => (
+                        <TableRow key={product.id}>
+                            <TableCell>{product.id}</TableCell>
+                            <TableCell>{product.name}</TableCell>
+                            <TableCell>{getCategoryName(product.category)}</TableCell>
+                            <TableCell>{product.stock}</TableCell>
+                            <TableCell>{product.measure_type}</TableCell>
+                            <TableCell>{product.production ? "Sí" : "No"}</TableCell>
+                            <TableCell>
+                                <IconButton color="primary" onClick={() => handleEdit(product)}>
+                                    <Edit />
+                                </IconButton>
+                            </TableCell>
+                        </TableRow>
+                    ))}
                 </TableBody>
             </Table>
         </Container>
