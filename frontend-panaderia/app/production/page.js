@@ -1,19 +1,23 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { Container, Table, TableHead, TableRow, TableCell, TableBody, Button, IconButton, TextField } from '@mui/material';
+import { Container, Table, TableHead, TableRow, TableCell, TableBody, Button, IconButton, TextField, MenuItem } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
 import ProductionService from '@/services/ProductionService';
 import ProductService from '@/services/ProductService';
+import ExcelService from "@/services/ExcelService";
 import { useRouter } from 'next/navigation';
 import Navbar from '../../components/Navbar';
 
 export default function Production() {
     const [productions, setProductions] = useState([]);
+    const [filteredProductions, setFilteredProductions] = useState([]);
     const [newProduction, setNewProduction] = useState({ productId: '', measure_type: '', quantity: 0 });
     const [token, setToken] = useState('');
     const [availableProducts, setAvailableProducts] = useState([]);
-    const [editingProductionId, setEditingProductionId] = useState(null); // Estado para manejar la edición
-    const [updatedData, setUpdatedData] = useState({}); // Para almacenar los datos actualizados
+    const [editingProductionId, setEditingProductionId] = useState(null);
+    const [updatedData, setUpdatedData] = useState({});
+    const [selectedDate, setSelectedDate] = useState('');
+    const [nameFilter, setNameFilter] = useState('');
     const router = useRouter();
 
     useEffect(() => {
@@ -23,9 +27,21 @@ export default function Production() {
         fetchProductsForProduction(storedToken);
     }, []);
 
+    useEffect(() => {
+        const filtered = productions.filter((production) => {
+            const productionDate = production.createdAt ? new Date(production.createdAt).toISOString().split('T')[0] : '';
+            const matchesDate = !selectedDate || productionDate === selectedDate;
+            const matchesName = !nameFilter || (production.productId && production.productId.toLowerCase().includes(nameFilter.toLowerCase()));
+            return matchesDate && matchesName;
+        });
+        setFilteredProductions(filtered);
+    }, [selectedDate, nameFilter, productions]);
+    
+
     const fetchProductions = async (token) => {
         const data = await ProductionService.getAllProductions(token);
         setProductions(data);
+        setFilteredProductions(data);
     };
 
     const fetchProductsForProduction = async (token) => {
@@ -38,13 +54,22 @@ export default function Production() {
     };
 
     const handleCreateProduction = async () => {
-        await ProductionService.createProduction(newProduction, token);
-        fetchProductions(token);
+        try {
+            await ProductionService.createProduction(newProduction, token);
+            fetchProductions(token);
+            setNewProduction({ productId: '', measure_type: '', quantity: 0 });
+        } catch (error) {
+            console.error('Error al crear producción:', error);
+        }
     };
 
     const handleDeleteProduction = async (id) => {
-        await ProductionService.deleteProduction(id, token);
-        fetchProductions(token);
+        try {
+            await ProductionService.deleteProduction(id, token);
+            fetchProductions(token);
+        } catch (error) {
+            console.error('Error al eliminar producción:', error);
+        }
     };
 
     const handleEdit = (production) => {
@@ -57,54 +82,83 @@ export default function Production() {
     };
 
     const handleUpdateProduction = async (id) => {
-        await ProductionService.updateProduction(id, updatedData, token);
-        setEditingProductionId(null); // Salir del modo de edición
-        fetchProductions(token); // Actualizar la lista de producciones
+        try {
+            await ProductionService.updateProduction(id, updatedData, token);
+            setEditingProductionId(null);
+            fetchProductions(token);
+        } catch (error) {
+            console.error('Error al actualizar producción:', error);
+        }
     };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setUpdatedData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+    const DownloadAllProduccions = async () => {
+        try {
+            await ExcelService.getAllProduccions(token);
+        } catch (error) {
+            console.error("Error al descargar producciones:", error);
+        }
+    };
+
+    const DownloadFilteredProduccions = async () => {
+        try {
+            let url = `http://localhost:3001/api/v1/Excel/getFilteredProduccions`;
+            const queryParams = {};
+            if (nameFilter) {
+                queryParams.name = nameFilter;
+            }
+            if (selectedDate) {
+                const minDate = selectedDate;
+                const maxDate = new Date(selectedDate);
+                maxDate.setDate(maxDate.getDate());
+                queryParams.minCreatedAt = minDate;
+                queryParams.maxCreatedAt = maxDate.toISOString().split('T')[0];
+            }
+            const queryString = new URLSearchParams(queryParams).toString();
+            if (queryString) {
+                url += `?${queryString}`;
+            }
+
+            console.log("URL generada para la descarga:", url);
+            await ExcelService.getFilteredProduccions(url, token);
+        } catch (error) {
+            console.error("Error al descargar producciones filtradas:", error);
+        }
+    };
+
+    const handleClearFilter = () => {
+        setSelectedDate('');
+        setNameFilter('');
+        setFilteredProductions(productions);
     };
 
     return (
         <Container>
             <Navbar />
             <h1>Producción</h1>
-
-            {/* Formulario para añadir nueva producción */}
             <TextField
                 select
+                label="Seleccione un producto"
                 variant="outlined"
                 value={newProduction.productId}
                 onChange={(e) => setNewProduction({ ...newProduction, productId: e.target.value })}
                 fullWidth
                 margin="normal"
-                SelectProps={{
-                    native: true,
-                }}
             >
-                <option value="">Seleccione un producto</option>
                 {availableProducts.map((product) => (
-                    <option key={product.id} value={product.id}>{product.name}</option>
+                    <MenuItem key={product.id} value={product.id}>{product.name}</MenuItem>
                 ))}
             </TextField>
             <TextField
                 select
+                label="Seleccione tipo de medida"
                 variant="outlined"
                 value={newProduction.measure_type}
                 onChange={(e) => setNewProduction({ ...newProduction, measure_type: e.target.value })}
                 fullWidth
                 margin="normal"
-                SelectProps={{
-                    native: true,
-                }}>
-                <option value="">Seleccione tipo de medida</option>               
-                <option value="Kilo">Kilo</option>
-                <option value="Unidad">Unidad</option>
+            >
+                <MenuItem value="Kilo">Kilo</MenuItem>
+                <MenuItem value="Unidad">Unidad</MenuItem>
             </TextField>
             <TextField
                 label="Cantidad"
@@ -115,11 +169,35 @@ export default function Production() {
                 fullWidth
                 margin="normal"
             />
-            <Button onClick={handleCreateProduction} variant="contained" color="primary" sx={{textTransform:'none'}}>
+            <Button onClick={handleCreateProduction} variant="contained" color="primary" sx={{ textTransform: 'none' }}>
                 Añadir producción
             </Button>
-
-            {/* Tabla de Producciones */}
+            <div style={{ display: 'flex', gap: '10px', margin: '20px 0' }}>
+                <TextField
+                    label="Fecha"
+                    type="date"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                />
+                <TextField
+                    label="Nombre"
+                    variant="outlined"
+                    value={nameFilter}
+                    onChange={(e) => setNameFilter(e.target.value)}
+                />
+                <Button onClick={handleClearFilter} variant="outlined" color="secondary">
+                    Limpiar Filtro
+                </Button>
+            </div>
+            <Button variant="contained" color="primary" onClick={DownloadAllProduccions} style={{ margin: "10px", textTransform: 'none' }}>
+                Descargar Todas las Producciones
+            </Button>
+            <Button variant="contained" color="secondary" onClick={DownloadFilteredProduccions} style={{ margin: "10px", textTransform: 'none' }}>
+                Descargar Producciones Filtradas
+            </Button>
             <Table>
                 <TableHead>
                     <TableRow>
@@ -132,70 +210,20 @@ export default function Production() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {productions.map((production) => (
+                    {filteredProductions.map((production) => (
                         <TableRow key={production.productionId}>
                             <TableCell>{production.productionId}</TableCell>
-                            <TableCell>
-                                {editingProductionId === production.productionId ? (
-                                    <TextField
-                                        select
-                                        variant="outlined"
-                                        value={updatedData.productId}
-                                        name="productId"
-                                        onChange={handleChange}
-                                        fullWidth
-                                        SelectProps={{
-                                            native: true,
-                                        }}
-                                    >
-                                        <option value="">Seleccione un producto</option>
-                                        {availableProducts.map((product) => (
-                                            <option key={product.id} value={product.id}>{product.name}</option>
-                                        ))}
-                                    </TextField>
-                                ) : (
-                                    production.productId
-                                )}
-                            </TableCell>
-                            <TableCell>
-                                {editingProductionId === production.productionId ? (
-                                    <TextField
-                                        select
-                                        variant="outlined"
-                                        value={updatedData.measure_type}
-                                        name="measure_type"
-                                        onChange={handleChange}
-                                        fullWidth
-                                        SelectProps={{
-                                            native: true,
-                                        }}
-                                    >
-                                        <option value="">Seleccione tipo de medida</option>               
-                                        <option value="Kilo">Kilo</option>
-                                        <option value="Unidad">Unidad</option>
-                                    </TextField>
-                                ) : (
-                                    production.measure_type
-                                )}
-                            </TableCell>
-                            <TableCell>
-                                {editingProductionId === production.productionId ? (
-                                    <TextField
-                                        variant="outlined"
-                                        type="number"
-                                        value={updatedData.quantity}
-                                        name="quantity"
-                                        onChange={handleChange}
-                                        fullWidth
-                                    />
-                                ) : (
-                                    production.quantity
-                                )}
-                            </TableCell>
+                            <TableCell>{production.productId}</TableCell>
+                            <TableCell>{production.measure_type}</TableCell>
+                            <TableCell>{production.quantity}</TableCell>
                             <TableCell>{new Date(production.createdAt).toLocaleDateString()}</TableCell>
                             <TableCell>
                                 {editingProductionId === production.productionId ? (
-                                    <Button onClick={() => handleUpdateProduction(production.productionId)} variant="contained" color="primary" sx={{textTransform:'none'}}>
+                                    <Button
+                                        onClick={() => handleUpdateProduction(production.productionId)}
+                                        variant="contained"
+                                        color="primary"
+                                    >
                                         Aplicar
                                     </Button>
                                 ) : (
