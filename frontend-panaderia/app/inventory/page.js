@@ -8,7 +8,16 @@ import ProductService from '@/services/ProductService';
 import CategoryService from '@/services/CategoryService';
 import { useRouter } from 'next/navigation';
 import Navbar from '../../components/Navbar';
-
+import {
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    Legend,
+    ResponsiveContainer,
+  } from 'recharts';
 export default function Inventory() {
 
     const router = useRouter();
@@ -18,6 +27,8 @@ export default function Inventory() {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState(""); // Estado para la categoría seleccionada
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' }); // Configuración de ordenación
+
+
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem('user'));
@@ -29,13 +40,16 @@ export default function Inventory() {
             getAllUsers();
             getAllProducts(token);
             getAllCategories(token);
+
         }
         if (user?.roles?.includes('user')) {
             getUser(user.id);
             getAllProducts(token);
             getAllCategories(token);
+
         }
     }, []);
+
 
     const getAllUsers = async () => {
         const token = localStorage.getItem("token");
@@ -180,6 +194,20 @@ export default function Inventory() {
                     }
                 </TableBody>
             </Table>
+            <div>
+
+
+      <ResponsiveContainer width="100%" height={400}>
+        <BarChart data={sortedProducts}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="stock" fill="#8884d8" name= "Stock"/>
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
         </Container>
     );
 }
