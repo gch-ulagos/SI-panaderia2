@@ -16,15 +16,27 @@ const Navbar = () => {
         const token = localStorage.getItem('token');
         const result = await AuthService.logOut(token);
         if(result){
-            router.push('/login');
+            router.push('/');
         }
     }
+    const handleIndex = async () => {
+        const token = localStorage.getItem('token');
+        router.push('/inventory');
 
+    }
     return (
         <div className="navbar">
             <div className="navbar-item">
                 {user?.name}
             </div>
+
+        <   div className="navbar-item">
+            <Button onClick={handleIndex}
+                sx={{textTransform:'none'}}>
+                    Inicio
+                </Button>
+            </div>
+
             <div className="navbar-item">
                 <Button onClick={handleLogout}
                 sx={{textTransform:'none'}}>

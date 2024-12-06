@@ -338,7 +338,7 @@ export default function Production() {
           <YAxis />
           <Tooltip />
           <Legend />
-          <Bar dataKey="quantity" fill="#8884d8" />
+          <Bar dataKey="quantity" fill="#8884d8" name={("Cantidad")} />
         </BarChart>
       </ResponsiveContainer>
     </div>
