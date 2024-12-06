@@ -137,7 +137,7 @@ export default function BulkCreateTransactions() {
       setSuccessMessage("Transacciones creadas exitosamente");
       setErrorMessage(null);
       setTransactions([]);
-      router.push("/transactions");
+      router.push("/transaction");
     } catch (error) {
       setErrorMessage(error.message || "Error al crear transacciones");
       setSuccessMessage(null);

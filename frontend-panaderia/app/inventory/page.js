@@ -165,6 +165,15 @@ export default function Inventory() {
             <Button onClick={() => router.push('/inventory/Category')} sx={{ textTransform: 'none' }}>Categorías</Button>
             <Button onClick={() => router.push('/production')} sx={{ textTransform: 'none' }}>Producción</Button>
             <Button onClick={() => router.push('/inventory/file')} sx={{ textTransform: 'none' }}>Subir archivo</Button>
+<<<<<<< Updated upstream
+            <Button onClick={() => router.push('/inventory/Orders')} sx={{textTransform:'none'}}>Pedidos</Button>
+            <Button onClick={() => router.push('/transaction')} sx={{textTransform:'none'}}>Transacciones</Button>
+            <Button onClick={() => router.push('/providers')} sx={{textTransform:'none'}}>Proveedores</Button>
+            <Button onClick={() => router.push('/clients')} sx={{textTransform:'none'}}>Clientes</Button>
+=======
+            <Button onClick={() => router.push('/providers')} sx={{ textTransform: 'none' }}>Proveedores</Button>
+            <Button onClick={() => router.push('/transaction')} sx={{ textTransform: 'none' }}>Transacciones</Button>
+>>>>>>> Stashed changes
             <Button variant="contained" color="primary" onClick={DownloadAllProducts} style={{ margin: "10px", textTransform: 'none' }}> Descargar Todos los Productos </Button>
             <Button variant="contained" color="secondary" onClick={DownloadFilteredProducts} style={{ margin: "10px", textTransform: 'none' }}> Descargar Productos Filtrados </Button>
             

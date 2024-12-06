@@ -253,15 +253,15 @@ export default function Production() {
                     value={nameFilter}
                     onChange={(e) => setNameFilter(e.target.value)}
                 />
-                <Button onClick={handleClearFilter} variant="outlined" color="secondary">
-                    Limpiar Filtro
+                <Button onClick={handleClearFilter} variant="outlined" color="secondary" style={{ textTransform: 'none'}}>
+                    Limpiar filtro
                 </Button>
             </div>
             <Button variant="contained" color="primary" onClick={DownloadAllProduccions} style={{ margin: "10px", textTransform: 'none' }}>
-                Descargar Todas las Producciones
+                Descargar todas las producciones
             </Button>
             <Button variant="contained" color="secondary" onClick={DownloadFilteredProduccions} style={{ margin: "10px", textTransform: 'none' }}>
-                Descargar Producciones Filtradas
+                Descargar producciones filtradas
             </Button>
             <Table>
                 <TableHead>
@@ -332,6 +332,7 @@ export default function Production() {
       </div>
 
       <ResponsiveContainer width="100%" height={400}>
+<<<<<<< Updated upstream
         <BarChart data={filteredData}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
@@ -341,6 +342,19 @@ export default function Production() {
           <Bar dataKey="quantity" fill="#8884d8" name={("Cantidad")} />
         </BarChart>
       </ResponsiveContainer>
+=======
+      <BarChart data={filteredData}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis 
+          dataKey="name"
+        />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Bar dataKey="quantity" fill="#8884d8" name={"Cantidad"}/>
+      </BarChart>
+    </ResponsiveContainer>
+>>>>>>> Stashed changes
     </div>
         </Container>
     );

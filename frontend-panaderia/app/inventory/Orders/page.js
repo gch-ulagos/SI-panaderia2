@@ -201,7 +201,7 @@ export default function ManageOrders() {
         <Container>
             <Navbar />
             <Typography variant="h4" gutterBottom>
-                Pedidos de Pan
+                Pedidos de pan
             </Typography>
             {successMessage && (
                 <Alert severity="success">
@@ -222,7 +222,7 @@ export default function ManageOrders() {
                 onClick={handleCreateNewClick}
                 style={{ marginBottom: '20px' }}
             >
-                Crear Pedido
+                Crear pedido
             </Button>
 
             {showCreateForm && (
@@ -253,7 +253,7 @@ export default function ManageOrders() {
                             onChange={(e) => handleInputChange('estado_del_pedido', e.target.value)}
                         >
                             <MenuItem value="pendiente">Pendiente</MenuItem>
-                            <MenuItem value="en_proceso">En Proceso</MenuItem>
+                            <MenuItem value="en_proceso">En proceso</MenuItem>
                             <MenuItem value="completado">Completado</MenuItem>
                             <MenuItem value="cancelado">Cancelado</MenuItem>
                         </Select>
@@ -292,8 +292,8 @@ export default function ManageOrders() {
                         <TableCell>Estado</TableCell>
                         <TableCell>Kilos</TableCell>
                         <TableCell>Producto</TableCell>
-                        <TableCell>Fecha Creado</TableCell>
-                        <TableCell>Fecha Actualizado</TableCell>
+                        <TableCell>Fecha creado</TableCell>
+                        <TableCell>Fecha actualizado</TableCell>
                         <TableCell>Acciones</TableCell>
                     </TableRow>
                 </TableHead>
