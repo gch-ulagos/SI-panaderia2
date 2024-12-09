@@ -31,9 +31,12 @@ export default function Production() {
     const router = useRouter();
     const [chartData, setChartData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
-    const [selectedProduct, setSelectedProduct] = useState(''); // Estado para el filtro de producto
+    const [selectedProduct, setSelectedProduct] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+    const [startDateError, setStartDateError] = useState(false);
+    const [endDateError, setEndDateError] = useState(false);
+
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
         setToken(storedToken);
@@ -45,13 +48,23 @@ export default function Production() {
 
     useEffect(() => {
         const filtered = productions.filter((production) => {
-            const productionDate = production.createdAt ? new Date(production.createdAt).toISOString().split('T')[0] : '';
-            const matchesDate = !selectedDate || productionDate === selectedDate;
+            const productionDate = new Date(production.createdAt);
+            const productionDateOnly = new Date(productionDate.setHours(0, 0, 0, 0));
+    
+            const startDateOnly = startDate ? new Date(startDate + 'T00:00:00') : null;
+            const endDateOnly = endDate ? new Date(endDate + 'T23:59:59') : null;
+    
+            const matchesDate =
+                (!startDate || productionDateOnly >= startDateOnly) && 
+                (!endDate || productionDateOnly <= endDateOnly);
+    
             const matchesName = !nameFilter || (production.productId && production.productId.toLowerCase().includes(nameFilter.toLowerCase()));
+    
             return matchesDate && matchesName;
         });
+    
         setFilteredProductions(filtered);
-    }, [selectedDate, nameFilter, productions]);
+    }, [startDate, endDate, nameFilter, productions]);
     
 
     const fetchProductions = async (token) => {
@@ -78,46 +91,27 @@ export default function Production() {
                 quantity: item.quantity, 
                 createdAt: formatDate(item.createdAt), 
               }));
-            };
+        };
         const transformedData = transformData(data);
         setChartData(transformedData);
         setFilteredData(transformedData);
         console.log("Data from API:", transformedData);
-      };
+    };
 
-
-      useEffect(() => {
-        const filterData = () => {
-          let data = chartData;
-          console.log("Start Date:", startDate);
-          console.log("End Date:", endDate);
-          console.log("Data Before Filtering:", chartData);
-          // Filtro por nombre del producto
-          if (selectedProduct) {
-            data = data.filter((item) => item.name === selectedProduct);
-          }
-    
-          // Filtro por rango de fechas
-          if (startDate) {
-            data = data.filter((item) => item.createdAt >= startDate); 
-            console.log("Filtered data (after startDate):", data);
-          }
-          if (endDate) {
-            data = data.filter((item) => item.createdAt <= endDate);
-            console.log("Filtered data (after endDate):", data);
-          }
-    
-          setFilteredData(data);
-          
-        };
-    
-        filterData();
-      }, [selectedProduct, startDate, endDate, chartData]);
+    useEffect(() => {
+        const transformedData = filteredProductions.map(item => ({
+            name: item.productId,
+            quantity: item.quantity,
+            createdAt: new Date(item.createdAt).toLocaleDateString(),
+        }));
+        setFilteredData(transformedData);
+    }, [filteredProductions]);  
       
       const getUniqueProducts = () => {
         const products = chartData.map((item) => item.name);
-        return [...new Set(products)]; // Eliminar duplicados
+        return [...new Set(products)]; 
       };
+
     const handleCreateProduction = async () => {
         try {
             await ProductionService.createProduction(newProduction, token);
@@ -164,6 +158,9 @@ export default function Production() {
         }
     };
 
+    const startDateOnly = startDate ? new Date(startDate + 'T00:00:00') : null;
+    const endDateOnly = endDate ? new Date(endDate + 'T23:59:59') : null;
+
     const DownloadFilteredProduccions = async () => {
         try {
             let url = `http://localhost:3001/api/v1/Excel/getFilteredProduccions`;
@@ -171,12 +168,12 @@ export default function Production() {
             if (nameFilter) {
                 queryParams.name = nameFilter;
             }
-            if (selectedDate) {
-                const minDate = selectedDate;
-                const maxDate = new Date(selectedDate);
-                maxDate.setDate(maxDate.getDate());
-                queryParams.minCreatedAt = minDate;
-                queryParams.maxCreatedAt = maxDate.toISOString().split('T')[0];
+            if (startDate && endDate) {
+                queryParams.minCreatedAt = startDateOnly.toISOString().split('T')[0];
+                queryParams.maxCreatedAt = endDateOnly.toISOString().split('T')[0];
+
+                console.log("fecha i: ", startDateOnly);
+                console.log("fecha f: ", endDateOnly);
             }
             const queryString = new URLSearchParams(queryParams).toString();
             if (queryString) {
@@ -238,30 +235,103 @@ export default function Production() {
                 Añadir producción
             </Button>
             <div style={{ display: 'flex', gap: '10px', margin: '20px 0' }}>
-                <TextField
-                    label="Fecha"
-                    type="date"
-                    value={selectedDate}
-                    onChange={(e) => setSelectedDate(e.target.value)}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                />
-                <TextField
-                    label="Nombre"
-                    variant="outlined"
-                    value={nameFilter}
-                    onChange={(e) => setNameFilter(e.target.value)}
-                />
-                <Button onClick={handleClearFilter} variant="outlined" color="secondary" style={{ textTransform: 'none'}}>
-                    Limpiar filtro
-                </Button>
-            </div>
+            <TextField
+                label="Fecha inicio"
+                type="date"
+                value={startDate}
+                onChange={(e) => {
+                    const today = new Date();
+                    const selectedStartDate = new Date(e.target.value);
+
+                    if (!e.target.value || isNaN(selectedStartDate.getTime()) || selectedStartDate > today) {
+                        setStartDateError(true);
+                    } else {
+                        setStartDateError(false);
+                    }
+                    setStartDate(e.target.value);
+                }}
+                onKeyUp={() => {
+                    const today = new Date();
+                    const selectedStartDate = new Date(startDate);
+
+                    if (!startDate || isNaN(selectedStartDate.getTime()) || selectedStartDate > today) {
+                        setStartDateError(true);
+                    } else {
+                        setStartDateError(false);
+                    }
+                }}
+                InputLabelProps={{
+                    shrink: true,
+                }}
+                error={startDateError}
+                helperText={
+                    startDateError && startDate
+                        ? isNaN(new Date(startDate).getTime())
+                            ? 'Fecha no válida'
+                            : 'La fecha no puede ser superior al día de hoy'
+                        : ''
+                }
+            />
+            <TextField
+                label="Fecha fin"
+                type="date"
+                value={endDate}
+                onChange={(e) => {
+                    const selectedEndDate = new Date(e.target.value);
+
+                    if (!e.target.value || isNaN(selectedEndDate.getTime()) || selectedEndDate < new Date(startDate)) {
+                        setEndDateError(true);
+                    } else {
+                        setEndDateError(false);
+                    }
+                    setEndDate(e.target.value);
+                }}
+                onKeyUp={() => {
+                    const selectedEndDate = new Date(endDate);
+
+                    if (!endDate || isNaN(selectedEndDate.getTime()) || selectedEndDate < new Date(startDate)) {
+                        setEndDateError(true);
+                    } else {
+                        setEndDateError(false);
+                    }
+                }}
+                InputLabelProps={{
+                    shrink: true,
+                }}
+                error={endDateError}
+                helperText={
+                    endDateError && endDate
+                        ? isNaN(new Date(endDate).getTime())
+                            ? 'Fecha no válida'
+                            : 'La fecha de fin no puede ser antes de la fecha de inicio'
+                        : ''
+                }
+            />
+            <Button
+                onClick={() => {
+                    setStartDate('');
+                    setEndDate('');
+                    setStartDateError(false);
+                    setEndDateError(false);
+                }}
+                variant="outlined"
+                color="secondary"
+                style={{ textTransform: 'none' }}
+            >
+                Limpiar filtro
+            </Button>
+        </div>
             <Button variant="contained" color="primary" onClick={DownloadAllProduccions} style={{ margin: "10px", textTransform: 'none' }}>
                 Descargar todas las producciones
             </Button>
-            <Button variant="contained" color="secondary" onClick={DownloadFilteredProduccions} style={{ margin: "10px", textTransform: 'none' }}>
-                Descargar producciones filtradas
+            <Button
+                variant="contained"
+                color="secondary"
+                onClick={DownloadFilteredProduccions}
+                style={{ margin: "10px", textTransform: 'none' }}
+                disabled={startDateError || endDateError || !startDate || !endDate}
+            >
+            Descargar producciones filtradas
             </Button>
             <Table>
                 <TableHead>
@@ -306,33 +376,8 @@ export default function Production() {
             </Table>
             
             <div>
-      <div style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
-        <select onChange={(e) => setSelectedProduct(e.target.value)} value={selectedProduct}>
-          <option value="">Todos los productos</option>
-          {getUniqueProducts().map((product) => (
-            <option key={product} value={product}>
-              {product}
-            </option>
-          ))}
-        </select>
-
-        <input
-          type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          placeholder="Fecha de inicio"
-        />
-
-        <input
-          type="date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          placeholder="Fecha de fin"
-        />
-      </div>
 
       <ResponsiveContainer width="100%" height={400}>
-<<<<<<< Updated upstream
         <BarChart data={filteredData}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
@@ -342,19 +387,6 @@ export default function Production() {
           <Bar dataKey="quantity" fill="#8884d8" name={("Cantidad")} />
         </BarChart>
       </ResponsiveContainer>
-=======
-      <BarChart data={filteredData}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis 
-          dataKey="name"
-        />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Bar dataKey="quantity" fill="#8884d8" name={"Cantidad"}/>
-      </BarChart>
-    </ResponsiveContainer>
->>>>>>> Stashed changes
     </div>
         </Container>
     );

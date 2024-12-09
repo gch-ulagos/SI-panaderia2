@@ -10,15 +10,6 @@ const createOrder = async (OrderData) => {
         producto,
     } = OrderData;
 
-    // Validar que el celular solo contenga números
-    const celularRegex = /^[0-9]+$/;
-    if (!celularRegex.test(celular)) {
-        return {
-            code: 400,
-            message: 'El campo celular debe contener solo números.',
-        };
-    }
-
     try {
         const newOrder = await db.Pedido.create({
             direccion,

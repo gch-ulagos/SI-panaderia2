@@ -1,5 +1,6 @@
 import db from '../dist/db/models/index.js';
 import InventoryService from './InventoryService.js';
+import {DateTime}  from 'luxon';
 
 const addProduction = async (productionData) => {
     const {
@@ -77,15 +78,19 @@ const getAllProductions = async () => {
         }
     });
 
+    const formattedProductions = productions.map(production => ({
+        productionId: production.id,
+        productId: production.Producto.name,
+        measure_type: production.measure_type,
+        quantity: production.quantity,
+        createdAt: DateTime.fromJSDate(production.createdAt)
+            .setZone('America/Santiago')
+            .toISO(),
+    }));
+
     return {
         code: 200,
-        message: productions.map(production => ({
-            productionId: production.id,
-            productId: production.Producto.name,
-            measure_type: production.measure_type,
-            quantity: production.quantity,
-            createdAt: production.createdAt,
-        }))
+        message: formattedProductions
     };
 };
 

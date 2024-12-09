@@ -1,5 +1,4 @@
 {
-<<<<<<< Updated upstream
   "pages": {
     "/page": [
       "static/chunks/webpack.js",
@@ -24,37 +23,11 @@
       "static/css/app/inventory/page.css",
       "static/chunks/app/inventory/page.js"
     ],
-    "/providers/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/providers/page.css",
-      "static/chunks/app/providers/page.js"
-    ],
-    "/inventory/Orders/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/inventory/Orders/page.css",
-      "static/chunks/app/inventory/Orders/page.js"
-    ],
     "/production/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/production/page.css",
       "static/chunks/app/production/page.js"
-    ],
-    "/clients/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/clients/page.css",
-      "static/chunks/app/clients/page.js"
-    ],
-    "/inventory/[id]/edit/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/inventory/[id]/edit/page.js"
     ]
   }
-=======
-  "pages": {}
->>>>>>> Stashed changes
 }

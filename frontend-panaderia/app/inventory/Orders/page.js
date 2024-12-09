@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, TextField, Button, Typography, Alert, AlertTitle, Table, TableBody, TableCell, TableHead, TableRow, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import Navbar from '../../../components/Navbar';
 import OrderService from '../../../services/OrderService';
+import ProductService from '../../../services/ProductService';
 import { useRouter } from 'next/navigation';
 
 export default function ManageOrders() {
@@ -14,14 +15,16 @@ export default function ManageOrders() {
         nombre: '',
         celular: '',
         estado_del_pedido: '',
-        Kilos: '',  // En el frontend, usamos "Kilos"
+        Kilos: '',
         producto: ''
     });
     const [selectedOrder, setSelectedOrder] = useState(null);
+    const [availableProducts, setAvailableProducts] = useState([]);
     const [successMessage, setSuccessMessage] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
     const [showCreateForm, setShowCreateForm] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
+    const [token, setToken] = useState('');
 
     const fetchOrders = async () => {
         try {
@@ -35,7 +38,10 @@ export default function ManageOrders() {
     };
 
     useEffect(() => {
+        const storedToken = localStorage.getItem('token');
+        setToken(storedToken);
         fetchOrders();
+        fetchProductsForProduction(storedToken);
     }, []);
 
     const handleInputChange = (field, value) => {
@@ -43,9 +49,9 @@ export default function ManageOrders() {
     };
 
     const formatDate = (dateString) => {
-        if (!dateString) return ""; // Maneja valores nulos o indefinidos
+        if (!dateString) return "";
         const date = new Date(dateString);
-        return date.toLocaleDateString("es-ES"); // Muestra solo la fecha en formato dd/mm/yyyy
+        return date.toLocaleDateString("es-ES");
     };
     
 
@@ -59,20 +65,12 @@ export default function ManageOrders() {
             return;
         }
 
-                // Validación básica del celular
-                const celularRegex = /^[0-9]+$/;
-                if (!celularRegex.test(celular)) {
-                    setErrorMessage("El celular debe contener solo números.");
-                    return;
-                }
-
-        // Preparar los datos para enviar al backend
         const orderData = {
             direccion,
             nombre,
             celular,
             estado_del_pedido,
-            cantidad: Kilos,  // Mapeo de 'Kilos' a 'cantidad' para el backend
+            cantidad: Kilos,
             producto
         };
 
@@ -86,7 +84,7 @@ export default function ManageOrders() {
                 nombre: '',
                 celular: '',
                 estado_del_pedido: '',
-                Kilos: '',  // Reseteamos 'Kilos' en el frontend
+                Kilos: '',
                 producto: ''
             });
             fetchOrders();
@@ -103,29 +101,20 @@ export default function ManageOrders() {
 
         const { direccion, nombre, celular, estado_del_pedido, Kilos, producto } = newOrderData;
 
-        // Validación
-        const celularRegex = /^[0-9]+$/;
-        if (!celularRegex.test(celular)) {
-            setErrorMessage("El celular debe contener solo números.");
-            return;
-        }
-
         if (!direccion || !nombre || !celular || !estado_del_pedido || !Kilos || !producto) {
             setErrorMessage("Todos los campos son obligatorios.");
             return;
         }
 
-        // Confirmación de actualización
         const confirmUpdate = window.confirm("¿Estás seguro de que deseas actualizar este pedido?");
         if (!confirmUpdate) return;
 
-        // Preparar los datos para enviar al backend
         const orderData = {
             direccion,
             nombre,
             celular,
             estado_del_pedido,
-            cantidad: Kilos,  // Mapeo de 'Kilos' a 'cantidad' para el backend
+            cantidad: Kilos,
             producto
         };
 
@@ -175,26 +164,34 @@ export default function ManageOrders() {
             nombre: order.nombre,
             celular: order.celular,
             estado_del_pedido: order.estado_del_pedido,
-            Kilos: order.cantidad, // Usamos 'cantidad' de la base de datos, pero mostramos como 'Kilos'
+            Kilos: order.cantidad,
             producto: order.producto
         });
         setIsEditMode(true);
-        setShowCreateForm(true);  // Mostrar el formulario para editar
+        setShowCreateForm(true);
     };
 
     const handleCreateNewClick = () => {
-        // Limpiar el formulario para crear un nuevo pedido
         setSelectedOrder(null);
         setNewOrderData({
             direccion: '',
             nombre: '',
             celular: '',
             estado_del_pedido: '',
-            Kilos: '',  // Reseteamos 'Kilos' en el frontend
+            Kilos: '',
             producto: ''
         });
         setIsEditMode(false);
         setShowCreateForm(true);
+    };
+
+    const fetchProductsForProduction = async (token) => {
+        try {
+            const data = await ProductService.getProductsForProduction(token);
+            setAvailableProducts(data);
+        } catch (error) {
+            console.error('Error al obtener productos:', error.response?.data || error.message);
+        }
     };
 
     return (
@@ -242,7 +239,15 @@ export default function ManageOrders() {
                     <TextField
                         label="Celular"
                         value={newOrderData.celular}
-                        onChange={(e) => handleInputChange('celular', e.target.value)}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            if (/^\+?\d*$/.test(value) && value.length <= 12) {
+                                handleInputChange('celular', value);
+                            }
+                        }}
+                        inputProps={{
+                            maxLength: 12,
+                        }}
                         fullWidth
                     />
                     
@@ -262,16 +267,32 @@ export default function ManageOrders() {
                     <TextField
                         label="Kilos"
                         type="number"
-                        value={newOrderData.Kilos}  // Usamos 'Kilos' en el formulario
-                        onChange={(e) => handleInputChange('Kilos', e.target.value)}
+                        value={newOrderData.Kilos}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            if (value >= 0) {
+                                handleInputChange('Kilos', value);
+                            }
+                        }}
+                        inputProps={{
+                            min: 0,
+                        }}
                         fullWidth
                     />
                     <TextField
+                        select
                         label="Producto"
+                        variant="outlined"
                         value={newOrderData.producto}
-                        onChange={(e) => handleInputChange('producto', e.target.value)}
+                        onChange={(e) => handleInputChange('producto', e.target.value )}
                         fullWidth
-                    />
+                    >
+                        {availableProducts.map((product) => (
+                        <MenuItem key={product.id} value={product.name}>
+                            {product.name}
+                        </MenuItem>
+                        ))}
+                    </TextField>
                     <Button 
                         variant="contained" 
                         color="primary" 
