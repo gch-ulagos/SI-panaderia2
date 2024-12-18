@@ -162,7 +162,7 @@ export default function ManageClientes() {
           onClick={addCliente}
           style={{ textTransform: "none", marginTop: "10px" }}
         >
-          Agregar Cliente
+          Agregar cliente
         </Button>
       </div>
 

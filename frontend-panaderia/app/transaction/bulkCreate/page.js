@@ -165,11 +165,11 @@ export default function BulkCreateTransactions() {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>ID Producto</TableCell>
-            <TableCell>Nombre del Producto</TableCell>
-            <TableCell>Tipo de Transacción</TableCell>
+            <TableCell>ID producto</TableCell>
+            <TableCell>Nombre del producto</TableCell>
+            <TableCell>Tipo de transacción</TableCell>
             <TableCell>Cantidad</TableCell>
-            <TableCell>Precio Unitario</TableCell>
+            <TableCell>Precio unitario</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

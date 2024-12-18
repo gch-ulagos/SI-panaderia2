@@ -63,7 +63,7 @@ export default function TransactionsPage() {
     return (
         <Container>
             <Navbar />
-            <h1>Gestión de Transacciones</h1>
+            <h1>Gestión de transacciones</h1>
             <Button onClick={() => router.push("/inventory")} sx={{ textTransform: "none" }}>
                 Inventario
             </Button>

@@ -218,6 +218,7 @@ export default function ManageOrders() {
                 color="primary"
                 onClick={handleCreateNewClick}
                 style={{ marginBottom: '20px' }}
+                sx={{textTransform: 'none'}}
             >
                 Crear pedido
             </Button>
@@ -252,7 +253,7 @@ export default function ManageOrders() {
                     />
                     
                     <FormControl fullWidth>
-                        <InputLabel>Estado del Pedido</InputLabel>
+                        <InputLabel>Estado del pedido </InputLabel>
                         <Select
                             value={newOrderData.estado_del_pedido}
                             onChange={(e) => handleInputChange('estado_del_pedido', e.target.value)}
@@ -330,8 +331,8 @@ export default function ManageOrders() {
                             <TableCell>{formatDate(order.createdAt)}</TableCell>
                             <TableCell>{formatDate(order.updatedAt)}</TableCell>
                             <TableCell>
-                                <Button onClick={() => handleEditClick(order)} color="primary">Editar</Button>
-                                <Button onClick={() => deleteOrder(order.id)} color="secondary">Eliminar</Button>
+                                <Button onClick={() => handleEditClick(order)} sx={{textTransform: 'none'}} color="primary">Editar</Button>
+                                <Button onClick={() => deleteOrder(order.id)} sx={{textTransform: 'none'}} color="secondary">Eliminar</Button>
                             </TableCell>
                         </TableRow>
                     ))}

@@ -132,6 +132,7 @@ export default function ManageFiles() {
                         variant="contained"
                         color="primary"
                         onClick={() => document.getElementById('fileInput').click()}
+                        sx={{ textTransform: "none" }}
                     >
                         Seleccionar archivo
                     </Button>

@@ -31,15 +31,15 @@ const Navbar = () => {
             </div>
 
         <   div className="navbar-item">
-            <Button onClick={handleIndex}
+            <Button variant="contained" color="primary" onClick={handleIndex}
                 sx={{textTransform:'none'}}>
                     Inicio
                 </Button>
             </div>
 
             <div className="navbar-item">
-                <Button onClick={handleLogout}
-                sx={{textTransform:'none'}}>
+                <Button Button variant="contained" color="primary" onClick={handleLogout}
+                sx={{textTransform:'none', backgroundColor: 'red'}}>
                     Desconectarse
                 </Button>
             </div>
