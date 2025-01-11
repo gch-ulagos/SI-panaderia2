@@ -366,7 +366,7 @@ export default function Production() {
                                         <Edit />
                                     </IconButton>
                                 )}
-                                <IconButton color="secondary" aria-label="delete" onClick={() => handleDeleteProduction(production.productionId)}>
+                                <IconButton aria-label="delete" onClick={() => handleDeleteProduction(production.productionId)} sx={{color:'#f79d65'}}>
                                     <Delete />
                                 </IconButton>
                             </TableCell>

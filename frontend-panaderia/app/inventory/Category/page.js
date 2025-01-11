@@ -164,9 +164,8 @@ export default function ManageCategories() {
                                         </Button>
                                         <Button
                                             variant="contained"
-                                            color="error"
                                             onClick={() => deleteCategory(category.id)}
-                                            sx={{ textTransform: 'none' }}
+                                            sx={{ textTransform: 'none', backgroundColor:'#f79d65' }}
                                         >
                                             Eliminar
                                         </Button>

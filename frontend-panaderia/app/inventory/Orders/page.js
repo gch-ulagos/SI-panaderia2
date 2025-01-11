@@ -331,8 +331,8 @@ export default function ManageOrders() {
                             <TableCell>{formatDate(order.createdAt)}</TableCell>
                             <TableCell>{formatDate(order.updatedAt)}</TableCell>
                             <TableCell>
-                                <Button onClick={() => handleEditClick(order)} sx={{textTransform: 'none'}} color="primary">Editar</Button>
-                                <Button onClick={() => deleteOrder(order.id)} sx={{textTransform: 'none'}} color="secondary">Eliminar</Button>
+                                <Button variant="contained" color="primary" onClick={() => handleEditClick(order)} sx={{ textTransform: 'none', marginRight: '10px', }}>Editar</Button>
+                                <Button variant="contained" onClick={() => deleteOrder(order.id)} sx={{ textTransform: 'none', backgroundColor:'#f79d65' }}>Eliminar</Button>
                             </TableCell>
                         </TableRow>
                     ))}

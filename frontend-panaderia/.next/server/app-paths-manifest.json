@@ -1,9 +1,7 @@
 {
+  "/login/page": "app/login/page.js",
   "/inventory/page": "app/inventory/page.js",
-  "/inventory/file/page": "app/inventory/file/page.js",
-  "/providers/page": "app/providers/page.js",
-  "/transaction/page": "app/transaction/page.js",
-  "/transaction/bulkCreate/page": "app/transaction/bulkCreate/page.js",
-  "/clients/page": "app/clients/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js"
+  "/inventory/Category/page": "app/inventory/Category/page.js",
+  "/production/page": "app/production/page.js",
+  "/page": "app/page.js"
 }

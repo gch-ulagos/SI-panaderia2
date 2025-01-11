@@ -207,7 +207,7 @@ export default function Inventory() {
                         <TableCell>Nombre del producto</TableCell>
                         <TableCell>Categoría</TableCell>
                         <TableCell onClick={() => handleSort('stock')}>
-                            <Button>Stock {sortConfig.key === 'stock' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}</Button>
+                            <Button sx={{ textTransform: 'none' }}>Stock {sortConfig.key === 'stock' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}</Button>
                         </TableCell>
                         <TableCell>Medida</TableCell>
                         <TableCell>Producción local</TableCell>

@@ -1,15 +1,21 @@
 {
   "pages": {
-    "/page": [
+    "/inventory/bulkCreate/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
+      "static/css/app/inventory/bulkCreate/page.css",
+      "static/chunks/app/inventory/bulkCreate/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
+    ],
+    "/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/page.js"
     ],
     "/login/page": [
       "static/chunks/webpack.js",
@@ -23,35 +29,17 @@
       "static/css/app/inventory/page.css",
       "static/chunks/app/inventory/page.js"
     ],
-    "/inventory/file/page": [
+    "/inventory/Category/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/inventory/file/page.css",
-      "static/chunks/app/inventory/file/page.js"
+      "static/css/app/inventory/Category/page.css",
+      "static/chunks/app/inventory/Category/page.js"
     ],
-    "/providers/page": [
+    "/production/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/providers/page.css",
-      "static/chunks/app/providers/page.js"
-    ],
-    "/transaction/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/transaction/page.css",
-      "static/chunks/app/transaction/page.js"
-    ],
-    "/transaction/bulkCreate/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/transaction/bulkCreate/page.css",
-      "static/chunks/app/transaction/bulkCreate/page.js"
-    ],
-    "/clients/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/clients/page.css",
-      "static/chunks/app/clients/page.js"
+      "static/css/app/production/page.css",
+      "static/chunks/app/production/page.js"
     ]
   }
 }
