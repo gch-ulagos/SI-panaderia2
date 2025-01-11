@@ -132,28 +132,40 @@ const updateTransaction = async (id, transactionData) => {
 };
 
 const deleteTransaction = async (id) => {
-    const transaction = await db.Transacciones.findOne({ where: { id } });
-    if (!transaction) {
-        return { code: 404, message: 'Transaccion no encontrada' };
+    try {
+        const transaction = await db.Transacciones.findOne({ where: { id } });
+
+        if (!transaction) {
+            return { code: 404, message: 'Transaccion no encontrada' };
+        }
+
+        const product = await db.Producto.findOne({ where: { id: transaction.id_product } });
+
+        if (!product) {
+            return { code: 404, message: 'Producto asociado a la transaccion no encontrado' };
+        }
+
+        if (transaction.transaction_type === 'Compra') {
+            await db.Producto.update(
+                { stock: product.stock - transaction.quantity },
+                { where: { id: product.id } }
+            );
+        } else if (transaction.transaction_type === 'Venta') {
+            await db.Producto.update(
+                { stock: product.stock + transaction.quantity },
+                { where: { id: product.id } }
+            );
+        }
+
+        await db.Transacciones.destroy({ where: { id } });
+
+        return { code: 200, message: 'Transaccion eliminada exitosamente' };
+    } catch (error) {
+        console.error('Error al eliminar la transaccion:', error);
+        return { code: 500, message: 'Error interno del servidor' };
     }
-
-    const product = await db.Producto.findOne({ where: { id: transaction.id_product } });
-    if (transaction.transaction_type === 'Compra') {
-        await db.Producto.update(
-            { stock: product.stock - transaction.quantity },
-            { where: { id: product.id } }
-        );
-    } else if (transaction.transaction_type === 'Venta') {
-        await db.Producto.update(
-            { stock: product.stock + transaction.quantity },
-            { where: { id: product.id } }
-        );
-    }
-
-    await db.Transacciones.destroy({ where: { id } });
-
-    return { code: 200, message: 'Transaccion eliminada exitosamente' };
 };
+
 
 const getAllTransactions = async () => {
     try {

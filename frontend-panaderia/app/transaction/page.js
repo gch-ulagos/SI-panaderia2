@@ -1,7 +1,9 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
-import { Container, Table, TableBody, TableCell, TableHead, TableRow, TextField, Button } from "@mui/material";
-import IconButton from "@mui/material/IconButton";
+import {
+    Container,Table,TableBody,TableCell,TableHead,TableRow,TextField,Button,IconButton,Dialog,DialogTitle,DialogContent,DialogActions,
+} from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import Navbar from "../../components/Navbar";
 import TransactionService from "@/services/TransactionService";
@@ -12,6 +14,8 @@ export default function TransactionsPage() {
     const [ghostTransactions, setGhostTransactions] = useState([]);
     const [allProducts, setAllProducts] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [transactionToDelete, setTransactionToDelete] = useState(null);
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -40,6 +44,34 @@ export default function TransactionsPage() {
         }
     };
 
+    const handleDeleteTransaction = async (id) => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            router.push("/login");
+            return;
+        }
+        try {
+            await TransactionService.deleteTransaction(id, token);
+            setGhostTransactions((prevState) => ({
+                ...prevState,
+                transaction: prevState.transaction.filter((transaction) => transaction.id !== id),
+            }));
+            setDeleteDialogOpen(false);
+        } catch (e) {
+            console.error(`Error deleting transaction with ID ${id}`, e);
+        }
+    };
+
+    const openDeleteDialog = (id) => {
+        setTransactionToDelete(id);
+        setDeleteDialogOpen(true);
+    };
+
+    const closeDeleteDialog = () => {
+        setTransactionToDelete(null);
+        setDeleteDialogOpen(false);
+    };
+
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         return date.toLocaleString("es-ES", {
@@ -53,10 +85,11 @@ export default function TransactionsPage() {
     };
 
     const filteredData = {
-        transaction: Array.isArray(ghostTransactions.transaction) ? 
-            ghostTransactions.transaction.filter((transaction) =>
+        transaction: Array.isArray(ghostTransactions.transaction)
+            ? ghostTransactions.transaction.filter((transaction) =>
                 transaction.id.toString().includes(searchTerm)
-            ) : [],
+            )
+            : [],
         transactionTotals: ghostTransactions.transactionTotals || [],
     };
 
@@ -90,45 +123,63 @@ export default function TransactionsPage() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                {filteredData.transaction.map((ghostTransaction) => (
-                    <React.Fragment key={ghostTransaction.id}>
-                        <TableRow>
-                            <TableCell>{ghostTransaction.id}</TableCell>
-                            <TableCell>{ghostTransaction.transaction_type}</TableCell>
-                            <TableCell>{formatDate(ghostTransaction.createdAt)}</TableCell>
-                            <TableCell>
-                                <IconButton
-                                    color="primary"
-                                    aria-label={"Eliminar transacción " + ghostTransaction.id}
-                                >
-                                    <Delete />
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell colSpan={5}>
-                                <strong>Productos asociados:</strong>
-                                <ul>
-                                    {allProducts
-                                        .filter((product) => product.id_transactions === ghostTransaction.id)
-                                        .map((product, index) => (
-                                            <li key={index}>
-                                                Producto ID: {product.id_product}, Precio: {product.price}, Cantidad: {product.quantity}
-                                            </li>
-                                        ))}
-                                </ul>
-                                <strong>
-                                    Precio total: $
-                                    {allProducts
-                                        .filter((product) => product.id_transactions === ghostTransaction.id)
-                                        .reduce((sum, product) => sum + product.price * product.quantity, 0)}
-                                </strong>
-                            </TableCell>
-                        </TableRow>
-                    </React.Fragment>
-                ))}
+                    {filteredData.transaction.map((ghostTransaction) => (
+                        <React.Fragment key={ghostTransaction.id}>
+                            <TableRow>
+                                <TableCell>{ghostTransaction.id}</TableCell>
+                                <TableCell>{ghostTransaction.transaction_type}</TableCell>
+                                <TableCell>{formatDate(ghostTransaction.createdAt)}</TableCell>
+                                <TableCell>
+                                    <IconButton
+                                        color="primary"
+                                        aria-label={`Eliminar transacción ${ghostTransaction.id}`}
+                                        onClick={() => openDeleteDialog(ghostTransaction.id)}
+                                    >
+                                        <Delete />
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell colSpan={5}>
+                                    <strong>Productos asociados:</strong>
+                                    <ul>
+                                        {allProducts
+                                            .filter((product) => product.id_transactions === ghostTransaction.id)
+                                            .map((product, index) => (
+                                                <li key={index}>
+                                                    Producto ID: {product.id_product}, Precio: {product.price}, Cantidad: {product.quantity}
+                                                </li>
+                                            ))}
+                                    </ul>
+                                    <strong>
+                                        Precio total: $
+                                        {allProducts
+                                            .filter((product) => product.id_transactions === ghostTransaction.id)
+                                            .reduce((sum, product) => sum + product.price * product.quantity, 0)}
+                                    </strong>
+                                </TableCell>
+                            </TableRow>
+                        </React.Fragment>
+                    ))}
                 </TableBody>
             </Table>
+
+            {/* Dialog de Confirmación */}
+            <Dialog open={deleteDialogOpen} onClose={closeDeleteDialog}>
+                <DialogTitle>Confirmar eliminación</DialogTitle>
+                <DialogContent>
+                    ¿Estás seguro de que deseas eliminar esta transacción?
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={closeDeleteDialog} color="secondary" sx={{ textTransform: "none" }}>
+                        Cancelar
+                    </Button>
+                    <Button
+                        onClick={() => handleDeleteTransaction(transactionToDelete)} color="primary" sx={{ textTransform: "none" }}>
+                        Confirmar
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Container>
     );
 }

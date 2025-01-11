@@ -14,7 +14,9 @@ import {
   TableRow,
   Select,
   MenuItem,
+  IconButton,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import Navbar from "../../../components/Navbar";
 import ProductService from "@/services/ProductService";
 import TransactionService from "@/services/TransactionService";
@@ -48,49 +50,31 @@ export default function BulkCreateTransactions() {
     const updatedErrorMessages = { ...errorMessages };
 
     if (field === "quantity") {
-        const transaction = updatedTransactions[index];
-        let isValid = true;
-        let error = "";
+      const transaction = updatedTransactions[index];
+      let isValid = true;
+      let error = "";
 
-        if (transaction.measure_type === "unidad") {
-            if (!/^\d+$/.test(value)) {
-                isValid = false;
-                error = "Solo números enteros permitidos.";
-            }
+      if (transaction.measure_type === "Unidad") {
+        if (!/^\d+$/.test(value)) {
+          isValid = false;
+          error = "Solo números enteros permitidos.";
         }
-        else if (transaction.measure_type === "kilo") {
-            if (!/^\d*\.?\d*$/.test(value)) {
-                isValid = false;
-                error = "Solo números válidos permitidos.";
-            }
+      } else if (transaction.measure_type === "Kilo") {
+        if (!/^\d*\.?\d*$/.test(value)) {
+          isValid = false;
+          error = "Solo números válidos permitidos.";
         }
+      }
 
-        if (value.startsWith("-") || value.startsWith("+")) {
-            isValid = false;
-            error = "No se permiten signos negativos ni positivos.";
-        }
+      if (!isValid) {
+        updatedErrorMessages[index] = error;
+        value = transaction.quantity || "";
+      } else {
+        delete updatedErrorMessages[index];
+      }
 
-        if (/[^0-9.]/.test(value)) {
-            isValid = false;
-            error = "Solo números permitidos.";
-        }
-
-        if (!isValid) {
-            updatedErrorMessages[index] = error;
-            value = transaction.quantity || "";
-        } else {
-            delete updatedErrorMessages[index];
-        }
-
-        updatedTransactions[index][field] = value;
-
-        setTransactions(updatedTransactions);
-        setErrorMessages(updatedErrorMessages);
-    }
-
-
-
-    if (field === "id_product") {
+      updatedTransactions[index][field] = value;
+    } else if (field === "id_product") {
       const selectedProduct = products.find((product) => product.id === parseInt(value));
       if (selectedProduct) {
         updatedTransactions[index].name = selectedProduct.name;
@@ -119,6 +103,11 @@ export default function BulkCreateTransactions() {
       ...transactions,
       { id_product: "", name: "", transaction_type: "Venta", quantity: "", price: 0, measure_type: "" },
     ]);
+  };
+
+  const deleteRow = (index) => {
+    const updatedTransactions = transactions.filter((_, i) => i !== index);
+    setTransactions(updatedTransactions);
   };
 
   const handleSubmit = async () => {
@@ -169,7 +158,8 @@ export default function BulkCreateTransactions() {
             <TableCell>Nombre del producto</TableCell>
             <TableCell>Tipo de transacción</TableCell>
             <TableCell>Cantidad</TableCell>
-            <TableCell>Precio unitario</TableCell>
+            <TableCell>Precio total</TableCell>
+            <TableCell>Acciones</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -220,6 +210,16 @@ export default function BulkCreateTransactions() {
               <TableCell>
                 <TextField fullWidth disabled value={transaction.price} />
               </TableCell>
+              <TableCell>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => deleteRow(index)}
+                  sx={{ textTransform: "none" }}
+                >
+                  Eliminar
+                </Button>
+              </TableCell>
             </TableRow>
           ))}
           <TableRow>
@@ -240,6 +240,7 @@ export default function BulkCreateTransactions() {
         onClick={handleSubmit}
         sx={{ textTransform: "none" }}
         style={{ marginLeft: "16px" }}
+        disabled={calculateTotalPrice() <= 0}
       >
         Crear transacciones
       </Button>

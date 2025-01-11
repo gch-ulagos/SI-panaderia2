@@ -1,13 +1,16 @@
 import axios from 'axios';
 
-
 const getAllFiles = async (token) => {
-    const response = await axios.get('http://localhost:3001/api/v1/file/getAllFiles', {
-        headers: { token },
-    });
-    return response.data;
+    try {
+        const response = await axios.get('http://localhost:3001/api/v1/file/getAllFiles', {
+            headers: { token },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching files:", error.response ? error.response.data : error.message);
+        throw error;
+    }
 };
-
 const uploadFile = async (file, token) => {
     const formData = new FormData();
     formData.append('file', file);

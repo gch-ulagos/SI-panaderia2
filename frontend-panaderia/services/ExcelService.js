@@ -14,7 +14,7 @@ const getAllProducts = async (token) => {
     try {
         const response = await axios.get(`http://localhost:3001/api/v1/Excel/getAllProducts`, {
             headers: { token },
-            responseType: 'blob' // Esto es esencial para manejar archivos
+            responseType: 'blob'
         });
         downloadFile(response.data, 'Productos.xlsx');
     } catch (error) {
@@ -40,7 +40,7 @@ const getFilteredProducts = async (url, token) => {
     try {
         const response = await axios.get(url, {
             headers: { token },
-            responseType: 'blob'  // Especificar que se espera una respuesta de tipo blob (archivo binario)
+            responseType: 'blob'
         });
         downloadFile(response.data, 'ProductosFiltrados.xlsx');
     } catch (error) {
@@ -53,7 +53,7 @@ const getFilteredProduccions = async (url, token) => {
     try {
         const response = await axios.get(url, {
             headers: { token },
-            responseType: 'blob', // Manejar la respuesta como archivo
+            responseType: 'blob',
         });
         downloadFile(response.data, 'ProduccionesFiltradas.xlsx');
     } catch (error) {

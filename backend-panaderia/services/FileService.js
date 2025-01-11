@@ -34,7 +34,7 @@ const uploadFile = (req, res) => {
             try {
                 const filePath = path.join(uploadFolder, req.file.filename);
 
-                const newFileRecord = await db.Archivo.create({
+                const newFileRecord = await db.Archivos.create({
                     route: filePath,
                     name: req.file.filename
                 });
@@ -54,7 +54,7 @@ const uploadFile = (req, res) => {
 
 const deleteFile = async (fileId) => {
     try {
-        const fileRecord = await db.Archivo.findByPk(fileId);
+        const fileRecord = await db.Archivos.findByPk(fileId);
         if (!fileRecord) {
             return { code: 404, message: 'Archivo no encontrado en la base de datos' };
         }
@@ -73,7 +73,7 @@ const deleteFile = async (fileId) => {
 const updateFile = (req, res, fileId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const existingFileRecord = await db.Archivo.findByPk(fileId);
+            const existingFileRecord = await db.Archivos.findByPk(fileId);
             if (!existingFileRecord) {
                 return reject({ code: 404, message: 'Archivo no encontrado en la base de datos' });
             }
@@ -88,7 +88,7 @@ const updateFile = (req, res, fileId) => {
                 try {
                     const newFilePath = path.join(uploadFolder, req.file.filename);
 
-                    await db.Archivo.update(
+                    await db.Archivos.update(
                         { route: newFilePath,
                             name: req.file.filename
                         },
@@ -113,7 +113,7 @@ const updateFile = (req, res, fileId) => {
 
 const getAllFiles = async () => {
     try {
-        const files = await db.Archivo.findAll({
+        const files = await db.Archivos.findAll({
             attributes: ['id', 'route','name'],
         });
         return { code: 200, message: 'Archivos obtenidos correctamente', files };
