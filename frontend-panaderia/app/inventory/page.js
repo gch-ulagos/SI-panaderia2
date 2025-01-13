@@ -169,6 +169,7 @@ export default function Inventory() {
             <Button onClick={() => router.push('/transaction')} sx={{textTransform:'none'}}>Transacciones</Button>
             <Button onClick={() => router.push('/providers')} sx={{textTransform:'none'}}>Proveedores</Button>
             <Button onClick={() => router.push('/clients')} sx={{textTransform:'none'}}>Clientes</Button>
+            <Button onClick={() => router.push('/stadistics')} sx={{textTransform:'none'}}>Estadisticas</Button>
             <Button variant="contained" color="primary" onClick={DownloadAllProducts} style={{ margin: "10px", textTransform: 'none' }}> Descargar todos los productos </Button>
             <Button variant="contained" color="secondary" onClick={DownloadFilteredProducts} style={{ margin: "10px", textTransform: 'none' }}> Descargar productos filtrados </Button>
             
