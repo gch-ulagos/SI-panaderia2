@@ -15,7 +15,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   Archivo.init({
     route: DataTypes.STRING,  
-    name: DataTypes.STRING
+    name: DataTypes.STRING,
+    transactionId: DataTypes.INTEGER
   }, {
     sequelize,
     tableName: 'Archivos',

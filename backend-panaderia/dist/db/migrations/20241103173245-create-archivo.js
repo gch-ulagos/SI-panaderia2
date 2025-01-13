@@ -15,6 +15,9 @@ module.exports = {
       name: {
         type: Sequelize.STRING
       },
+      transactionId: {
+        type: Sequelize.INTEGER
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

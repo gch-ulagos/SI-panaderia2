@@ -23,6 +23,12 @@
       "static/css/app/inventory/page.css",
       "static/chunks/app/inventory/page.js"
     ],
+    "/stadistics/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/stadistics/page.css",
+      "static/chunks/app/stadistics/page.js"
+    ],
     "/transaction/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
@@ -34,12 +40,6 @@
       "static/chunks/main-app.js",
       "static/css/app/transaction/bulkCreate/page.css",
       "static/chunks/app/transaction/bulkCreate/page.js"
-    ],
-    "/inventory/Orders/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/inventory/Orders/page.css",
-      "static/chunks/app/inventory/Orders/page.js"
     ],
     "/inventory/file/page": [
       "static/chunks/webpack.js",

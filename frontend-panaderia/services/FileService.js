@@ -11,14 +11,15 @@ const getAllFiles = async (token) => {
         throw error;
     }
 };
-const uploadFile = async (file, token) => {
+const uploadFile = async (file, transactionId, token) => {
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('transactionId', transactionId);
 
     const response = await axios.post('http://localhost:3001/api/v1/file/upload', formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
-            token,
+            token: token,
         },
     });
 
@@ -36,9 +37,10 @@ const deleteFile = async (fileId, token) => {
 };
 
 
-const updateFile = async (fileId, newFile, token) => {
+const updateFile = async (fileId, newFile, transactionId, token) => {
     const formData = new FormData();
     formData.append('file', newFile);
+    formData.append('transactionId', transactionId);
 
     const response = await axios.put(`http://localhost:3001/api/v1/file/update/${fileId}`, formData, {
         headers: {
@@ -49,7 +51,6 @@ const updateFile = async (fileId, newFile, token) => {
 
     return response.data;
 };
-
 export default {
     uploadFile,
     deleteFile,
