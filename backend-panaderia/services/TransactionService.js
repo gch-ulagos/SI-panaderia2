@@ -2,7 +2,7 @@ import { transform } from '@babel/core';
 import db from '../dist/db/models/index.js';
 
 const createTransaction = async (transactionData) => {
-    const { id_product, measure_type, transaction_type, price, quantity } = transactionData;
+    const { id_product, transaction_type, quantity } = transactionData;
 
     const product = await db.Producto.findOne({ where: { id: id_product } });
     if (!product) {
@@ -25,22 +25,32 @@ const createTransaction = async (transactionData) => {
 
     const newTransaction = await db.Transacciones.create({
         id_product,
-        measure_type: product.measure_type,
         transaction_type,
         price: product.price,
         quantity,
     });
 
+    const transactionWithProduct = {
+        ...newTransaction.toJSON(),
+        product: product.toJSON(),
+    };
+
     return {
         code: 200,
         message: 'Transaccion creada exitosamente',
-        transaction: newTransaction,
+        transaction: transactionWithProduct,
     };
 };
 
 const getTransactionById = async (id) => {
     const transaction = await db.Transacciones.findAll({
         where: { id_transactions: id },
+        include: [
+            {
+                model: db.Producto,
+                as: 'product',
+            },
+        ],
     });
 
     const transactionTotal = await db.TransactionTotal.findAll({
@@ -51,8 +61,12 @@ const getTransactionById = async (id) => {
         return { code: 404, message: 'Transaccion no encontrada' };
     }
 
-    return { code: 200, message: {transaction: transaction,
-        transactionTotal: transactionTotal}
+    return { 
+        code: 200, 
+        message: {
+            transaction,
+            transactionTotal,
+        },
     };
 };
 
@@ -173,6 +187,12 @@ const getAllTransactions = async () => {
             where: {
                 price: null,
             },
+            include: [
+                {
+                    model: db.Producto,
+                    as: 'product',
+                },
+            ],
         });
 
         if (!ghostTransactions.length) {
@@ -185,6 +205,12 @@ const getAllTransactions = async () => {
                 where: {
                     id_transactions: ghost.id,
                 },
+                include: [
+                    {
+                        model: db.Producto,
+                        as: 'product',
+                    },
+                ],
             });
 
             if (realTransaction.length) {
@@ -198,6 +224,7 @@ const getAllTransactions = async () => {
         return { code: 500, message: 'Error fetching transactions' };
     }
 };
+
 
 const bulkCreateTransactions = async (transactions) => {
     if (!Array.isArray(transactions)) {
