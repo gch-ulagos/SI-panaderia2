@@ -214,7 +214,7 @@ export default function TransactionsPage() {
   return (
     <Container>
       <Navbar />
-      <h1>Estadísticas de Transacciones</h1>
+      <h1>Estadísticas de transacciones</h1>
       <Grid container spacing={2}>
         {/* Gráficos */}
         <Grid item xs={12} sm={6}>
@@ -226,8 +226,8 @@ export default function TransactionsPage() {
             fullWidth
             style={{ marginBottom: "1rem" }}
           >
-            <MenuItem value="product">Por Producto</MenuItem>
-            <MenuItem value="category">Por Categoría</MenuItem>
+            <MenuItem value="product">Por producto</MenuItem>
+            <MenuItem value="category">Por categoría</MenuItem>
           </Select>
 
           <Select
@@ -371,9 +371,9 @@ export default function TransactionsPage() {
 
         {/* Tabla de transacciones */}
         <Grid item xs={12} sm={6}>
-          <h2>Tabla de Transacciones</h2>
+          <h2>Tabla de transacciones</h2>
           <TextField
-            label="Buscar por Nombre de Producto"
+            label="Buscar por nombre de producto"
             variant="outlined"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}

@@ -45,8 +45,10 @@ export default function ManageClientes() {
 
   const addCliente = async () => {
     const { nombre, direccion, contacto } = newCliente;
-    if (!empresa || !contacto.match(/^\d+$/)) {
-      setErrorMessage("Asegúrese de llenar todos los campos correctamente.");
+    if (!nombre || !direccion || !contacto || !/^\+?[0-9]{1,12}$/.test(contacto)) {
+      setErrorMessage(
+        "Por favor, completa todos los campos correctamente. El contacto debe iniciar opcionalmente con '+' y contener hasta 12 números."
+      );
       return;
     }
     try {
@@ -55,9 +57,9 @@ export default function ManageClientes() {
       setSuccessMessage(response.message);
       setErrorMessage(null);
       setnewCliente({ empresa: "", contacto: "" });
-      fetchClientes();
+      fetchProveedores();
     } catch (error) {
-      setErrorMessage("Error al crear al cliente");
+      setErrorMessage("Error al crear cliente");
       setSuccessMessage(null);
     }
   };
@@ -143,7 +145,7 @@ export default function ManageClientes() {
         />
         <TextField
           label="Direccion"
-          value={newCliente.nombre}
+          value={newCliente.direccion}
           onChange={(e) => setnewCliente({ ...newCliente, direccion: e.target.value })}
           fullWidth
           margin="normal"
@@ -151,7 +153,12 @@ export default function ManageClientes() {
         <TextField
           label="Contacto (solo números)"
           value={newCliente.contacto}
-          onChange={(e) => setnewCliente({ ...newCliente, contacto: e.target.value })}
+          onChange={(e) => {
+            const value = e.target.value;
+            if (/^\+?[0-9]{0,12}$/.test(value)) {
+              setnewCliente({ ...newCliente, contacto: value });
+            }
+          }}
           fullWidth
           margin="normal"
           inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
@@ -186,7 +193,7 @@ export default function ManageClientes() {
                 {selectedCliente && selectedCliente.id === Cliente.id ? (
                   <TextField
                     fullWidth
-                    value={selectedCliente.empresa}
+                    value={selectedCliente.nombre}
                     onChange={(e) =>
                       setselectedCliente({ ...selectedCliente, nombre: e.target.value })
                     }

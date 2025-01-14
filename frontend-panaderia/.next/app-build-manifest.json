@@ -23,11 +23,65 @@
       "static/css/app/inventory/page.css",
       "static/chunks/app/inventory/page.js"
     ],
+    "/providers/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/providers/page.css",
+      "static/chunks/app/providers/page.js"
+    ],
+    "/clients/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/clients/page.css",
+      "static/chunks/app/clients/page.js"
+    ],
     "/stadistics/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/stadistics/page.css",
       "static/chunks/app/stadistics/page.js"
+    ],
+    "/transaction/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/transaction/page.css",
+      "static/chunks/app/transaction/page.js"
+    ],
+    "/inventory/file/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/inventory/file/page.css",
+      "static/chunks/app/inventory/file/page.js"
+    ],
+    "/production/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/production/page.css",
+      "static/chunks/app/production/page.js"
+    ],
+    "/inventory/Category/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/inventory/Category/page.css",
+      "static/chunks/app/inventory/Category/page.js"
+    ],
+    "/inventory/bulkCreate/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/inventory/bulkCreate/page.css",
+      "static/chunks/app/inventory/bulkCreate/page.js"
+    ],
+    "/transaction/bulkCreate/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/transaction/bulkCreate/page.css",
+      "static/chunks/app/transaction/bulkCreate/page.js"
+    ],
+    "/inventory/Orders/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/inventory/Orders/page.css",
+      "static/chunks/app/inventory/Orders/page.js"
     ]
   }
 }
