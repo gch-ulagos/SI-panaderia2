@@ -12,8 +12,10 @@ import {
   Grid,
   Select,
   MenuItem,
+  Button
 } from "@mui/material";
 import Navbar from "../../components/Navbar";
+import ExcelService from "@/services/ExcelService";
 import TransactionService from "@/services/TransactionService";
 import CategoryService from "@/services/CategoryService";
 import {
@@ -145,6 +147,15 @@ export default function TransactionsPage() {
     setGhostTransactions({ transaction: filtered });
   };
 
+  const DownloadAllTransacciones = async () => {
+    const token = localStorage.getItem("token");
+        try {
+            await ExcelService.getAllTransacciones(token);
+        } catch (error) {
+            console.error("Error al descargar producciones:", error);
+        }
+    };
+
   const handleGroupByChange = (value) => {
     setGroupBy(value);
     processChartData(allProducts, value);
@@ -225,6 +236,9 @@ export default function TransactionsPage() {
               shrink: true,
             }}
           />
+          <Button variant="contained" color="primary" onClick={DownloadAllTransacciones} style={{ margin: "10px", textTransform: 'none' }}>
+                Descargar todas las transacciones
+          </Button>
 
           {/* Gráfico circular */}
           <ResponsiveContainer width="100%" height={300}>
@@ -305,7 +319,7 @@ export default function TransactionsPage() {
                       ))}
                   </TableCell>
                   <TableCell>
-                    $$
+                    $
                     {filteredProducts
                       .filter((product) => product.id_transactions === transaction.id)
                       .reduce((sum, product) => sum + product.quantity * product.price, 0)}

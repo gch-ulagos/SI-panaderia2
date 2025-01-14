@@ -22,6 +22,22 @@ const getAllProducts = async (token) => {
         throw error;
     }
 };
+const getAllTransacciones = async (token) => {
+    try {
+        const response = await axios.get(`http://localhost:3001/api/v1/Excel/getAllTransacciones`, {
+            headers: { token },
+            responseType: 'blob'
+        });
+        downloadFile(response.data, 'TodaslasTransacciones.xlsx');
+    } catch (error) {
+        console.error('Error obteniendo Transacciones:', error);
+        throw error;
+    }
+};
+
+
+
+
 
 const getAllProduccions = async (token) => {
     try {
@@ -70,5 +86,6 @@ export default {
     getAllProducts,
     getAllProduccions,
     getFilteredProducts,
-    getFilteredProduccions
+    getFilteredProduccions,
+    getAllTransacciones
 };

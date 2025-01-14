@@ -112,6 +112,50 @@ router.get('/getFilteredProduccions',
 
 
 
+router.get('/transacciones', async (req, res) => {
+    try {
+        const transacciones = await ExcelService.getTransacciones();
+
+        if (!transacciones || transacciones.length === 0) {
+            return res.status(404).json({ message: "No se encontraron transacciones." });
+        }
+
+        res.status(200).json(transacciones);
+    } catch (err) {
+        console.error('Error al obtener transacciones:', err.message);
+        res.status(500).json({ message: "Error al obtener transacciones.", error: err.message });
+    }
+});
+
+
+
+router.get('/getAllTransacciones',
+    [
+        AuthMiddleware.validateToken,
+    ],
+    async (req, res) => {
+        const response = await ExcelService.getAllTransacciones(req);
+
+        if (response.code === 200) {
+
+            res.setHeader('Content-Disposition', 'attachment; filename=TodaslasTransacciones.xlsx');
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.send(response.buffer);
+        } else {
+
+            res.status(response.code).json({ message: response.message });
+        }
+    }
+);
+
+
+
+
+
+
+
+
+
 
 
 

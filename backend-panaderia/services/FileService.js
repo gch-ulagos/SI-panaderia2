@@ -134,7 +134,7 @@ const updateFile = (req, res, fileId) => {
 const getAllFiles = async () => {
     try {
         const files = await db.Archivo.findAll({
-            attributes: ['id', 'route', 'name'],
+            attributes: ['id', 'route', 'name', 'transactionId'],
         });
         return { code: 200, message: 'Archivos obtenidos correctamente', files };
     } catch (error) {

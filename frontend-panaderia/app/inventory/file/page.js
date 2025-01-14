@@ -38,6 +38,17 @@ export default function ManageFiles() {
         }
     };
 
+    const fetchTransactions = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const data = await TransactionService.getGhostTransactions(token);
+            setTransactions(data.transaction || []);
+            console.log(data.transaction);
+        } catch (error) {
+            console.error("Error fetching transactions:", error);
+        }
+    };
+
     useEffect(() => {
         fetchFiles();
         fetchTransactions();
@@ -67,7 +78,7 @@ export default function ManageFiles() {
                 setInfoMessage(null);
                 setSuccessMessage("Archivo actualizado correctamente");
             } else {
-                response = await FileService.uploadFile(formData, token);
+                response = await FileService.uploadFile(selectedFile, selectedTransaction, token);
                 setSuccessMessage("Archivo subido correctamente");
             }
     

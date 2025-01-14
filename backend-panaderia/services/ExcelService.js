@@ -424,16 +424,80 @@ const getFilteredProduccions = async (query) => {
 
 
 
+const getTransacciones = () => {
+    return db.Produccion.findAll({
+        include: [
+            {
+                model: db.Producto,   
+                attributes: ['name'], 
+            }
+        ]
+    })
+    .then((produccions) => {
+        return produccions.map(produccion => {
+            const produccionJSON = produccion.toJSON();
+            return {
+                ...produccionJSON, 
+                product: produccionJSON.Producto.name, 
+            };
+        });
+    })
+    .catch((err) => {
+        throw new Error('Error al obtener los datos: ' + err.message);
+    });
+};
 
 
 
+const getAllTransacciones = async () => {
+    try {
+        const datos = await getTransacciones(); 
+
+
+        if (!datos || datos.length === 0) {
+            return { code: 404, message: "No hay datos para exportar." };
+        }
+
+  
+        const encabezados = [
+            { key: 'id', label: 'ID' },
+            { key: 'product', label: 'Producto' },
+            { key: 'measure_type', label: 'Unidad de medida' },
+            { key: 'quantity', label: 'Cantidad' },
+            { key: 'createdAt', label: 'Fecha de creación' },
+            { key: 'updatedAt', label: 'Fecha de actualización' },
+        ];
+
+        const datosConEncabezados = datos.map(item => {
+            const nuevoItem = {};
+            encabezados.forEach(encabezado => {
+                nuevoItem[encabezado.label] = item[encabezado.key]; 
+            });
+            return nuevoItem;
+        });
+
+        const hoja = XLSX.utils.json_to_sheet(datosConEncabezados, {
+            header: encabezados.map(encabezado => encabezado.label) 
+        });
+        const libro = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(libro, hoja, 'TodaslasTransacciones');
+
+        const buffer = XLSX.write(libro, { type: 'buffer', bookType: 'xlsx' });
+
+        return { code: 200, buffer }; 
+    } catch (err) {
+        console.error('Error al exportar a Excel:', err.message);
+        return { code: 500, message: "Error al generar el archivo Excel." };
+    }
+};
 
 
 
 export default {
+    getTransacciones,
+    getAllTransacciones,
     getAllProducts,
     getAllProduccions,
     getFilteredProducts,
     getFilteredProduccions
-
 };
