@@ -38,17 +38,6 @@ export default function ManageFiles() {
         }
     };
 
-    const fetchTransactions = async () => {
-        try {
-            const token = localStorage.getItem("token");
-            const data = await TransactionService.getGhostTransactions(token);
-            setTransactions(data.transaction || []);
-            console.log(data.transaction);
-        } catch (error) {
-            console.error("Error fetching transactions:", error);
-        }
-    };
-
     useEffect(() => {
         fetchFiles();
         fetchTransactions();
@@ -230,7 +219,7 @@ export default function ManageFiles() {
                     <TableRow>
                         <TableCell>ID del archivo</TableCell>
                         <TableCell>Nombre del archivo</TableCell>
-                        <TableCell>Transacción Asociada</TableCell>
+                        <TableCell>Transacción asociada</TableCell>
                         <TableCell>Acciones</TableCell>
                     </TableRow>
                 </TableHead>

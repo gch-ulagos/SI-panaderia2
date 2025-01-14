@@ -1,3 +1,7 @@
 {
-  "/stadistics/page": "app/stadistics/page.js"
+  "/stadistics/page": "app/stadistics/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/page": "app/page.js",
+  "/login/page": "app/login/page.js",
+  "/inventory/page": "app/inventory/page.js"
 }

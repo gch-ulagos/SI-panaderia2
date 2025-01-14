@@ -324,54 +324,49 @@ const getAllProduccions = async () => {
 
 const filteredProduccion = (query) => {
     const { name, minCreatedAt, maxCreatedAt } = query; 
-    const filters = {};  // Objeto de filtros dinámicos
+    const filters = {};
 
-    // Si se proporciona un nombre, filtramos por el nombre del producto
     if (name) {
         filters['$Producto.name$'] = {
-            [db.Sequelize.Op.like]: `%${name}%`,  // Coincidencia parcial en el nombre usando LIKE
+            [db.Sequelize.Op.like]: `%${name}%`,
         };
     }
 
-    // Si se proporciona minCreatedAt, filtramos por la fecha mínima en createdAt
     if (minCreatedAt) {
-        const minDate = new Date(minCreatedAt);  // Utilizamos minCreatedAt correctamente
-        minDate.setUTCHours(0, 0, 0, 0);  // Establecer la hora a 00:00:00 UTC
+        const minDate = new Date(minCreatedAt);
+        minDate.setUTCHours(0, 0, 0, 0);
         filters.createdAt = {
-            [db.Sequelize.Op.gte]: minDate,  // Mayor o igual que minCreatedAt
+            [db.Sequelize.Op.gte]: minDate,
         };
     }
 
-    // Si se proporciona maxCreatedAt, filtramos por la fecha máxima en createdAt
     if (maxCreatedAt) {
-        const maxDate = new Date(maxCreatedAt);  // Utilizamos maxCreatedAt correctamente
-        maxDate.setUTCHours(23, 59, 59, 999);  // Establecer la hora a 23:59:59.999 UTC
-        if (!filters.createdAt) filters.createdAt = {};  // Si no hay filtro previo, inicializamos el objeto
-        filters.createdAt[db.Sequelize.Op.lte] = maxDate;  // Menor o igual que maxCreatedAt
+        const maxDate = new Date(maxCreatedAt);
+        maxDate.setUTCHours(23, 59, 59, 999);
+        if (!filters.createdAt) filters.createdAt = {};
+        filters.createdAt[db.Sequelize.Op.lte] = maxDate; 
     }
 
-    // Realizamos la consulta a la base de datos
     return db.Produccion.findAll({
-        where: filters,  // Aplicamos los filtros dinámicos
+        where: filters,
         include: [
             {
-                model: db.Producto,  // Relación con la tabla Producto
-                attributes: ['name'],  // Solo obtener el nombre del producto
+                model: db.Producto,
+                attributes: ['name'],
             }
         ]
     })
     .then((produccions) => {
-        // Mapeamos los resultados para añadir el nombre del producto
         return produccions.map(produccion => {
             const produccionJSON = produccion.toJSON();
             return {
                 ...produccionJSON,
-                product: produccionJSON.Producto.name,  // Devolver el nombre del producto
+                product: produccionJSON.Producto.name,
             };
         });
     })
     .catch((err) => {
-        throw new Error('Error al obtener los datos: ' + err.message);  // Manejo de errores
+        throw new Error('Error al obtener los datos: ' + err.message); 
     });
 };
 
@@ -420,76 +415,88 @@ const getFilteredProduccions = async (query) => {
     }
 };
 
+const getTransacciones = async () => {
+    try {
+        const transacciones = await db.Transacciones.findAll({
+            include: [
+                {
+                    model: db.Producto,
+                    attributes: ['name'],
+                    as: 'product',
+                    required: true,
+                },
+            ],
+        });
 
+        const transactionTotals = await db.TransactionTotal.findAll();
 
+        const totalsMap = transactionTotals.reduce((map, total) => {
+            map[total.id_transaction] = total.total;
+            return map;
+        }, {});
 
+        const transaccionesConTotales = transacciones.map((transaccion) => {
+            const transaccionJSON = transaccion.toJSON();
+            const productName = transaccionJSON.product ? transaccionJSON.product.name : 'Producto desconocido';
 
-const getTransacciones = () => {
-    return db.Produccion.findAll({
-        include: [
-            {
-                model: db.Producto,   
-                attributes: ['name'], 
-            }
-        ]
-    })
-    .then((produccions) => {
-        return produccions.map(produccion => {
-            const produccionJSON = produccion.toJSON();
             return {
-                ...produccionJSON, 
-                product: produccionJSON.Producto.name, 
+                ...transaccionJSON,
+                product: productName,
+                total: totalsMap[transaccionJSON.id_transactions] || 0,
             };
         });
-    })
-    .catch((err) => {
+
+        return transaccionesConTotales;
+    } catch (err) {
         throw new Error('Error al obtener los datos: ' + err.message);
-    });
+    }
 };
 
 
 
 const getAllTransacciones = async () => {
     try {
-        const datos = await getTransacciones(); 
-
+        const datos = await getTransacciones();
 
         if (!datos || datos.length === 0) {
             return { code: 404, message: "No hay datos para exportar." };
         }
 
-  
         const encabezados = [
-            { key: 'id', label: 'ID' },
+            { key: 'id_transactions', label: 'ID' },
             { key: 'product', label: 'Producto' },
             { key: 'measure_type', label: 'Unidad de medida' },
             { key: 'quantity', label: 'Cantidad' },
+            { key: 'price', label: 'Precio' },
+            { key: 'total', label: 'Total' },
             { key: 'createdAt', label: 'Fecha de creación' },
             { key: 'updatedAt', label: 'Fecha de actualización' },
         ];
 
-        const datosConEncabezados = datos.map(item => {
+        const datosConEncabezados = datos.map((item) => {
             const nuevoItem = {};
-            encabezados.forEach(encabezado => {
-                nuevoItem[encabezado.label] = item[encabezado.key]; 
+            encabezados.forEach((encabezado) => {
+                nuevoItem[encabezado.label] = item[encabezado.key];
             });
             return nuevoItem;
         });
 
         const hoja = XLSX.utils.json_to_sheet(datosConEncabezados, {
-            header: encabezados.map(encabezado => encabezado.label) 
+            header: encabezados.map((encabezado) => encabezado.label),
         });
         const libro = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(libro, hoja, 'TodaslasTransacciones');
 
         const buffer = XLSX.write(libro, { type: 'buffer', bookType: 'xlsx' });
 
-        return { code: 200, buffer }; 
+        return { code: 200, buffer };
     } catch (err) {
         console.error('Error al exportar a Excel:', err.message);
         return { code: 500, message: "Error al generar el archivo Excel." };
     }
 };
+
+
 
 
 

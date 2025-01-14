@@ -152,7 +152,7 @@ export default function ManageOrders() {
 
     const orderStatusMapping = {
         pendiente: "Pendiente",
-        en_proceso: "En Proceso",
+        en_proceso: "En proceso",
         completado: "Completado",
         cancelado: "Cancelado"
     };

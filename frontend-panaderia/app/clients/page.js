@@ -205,7 +205,7 @@ export default function ManageClientes() {
                     }
                   />
                 ) : (
-                  Cliente.contacto
+                  Cliente.direccion
                 )}
               </TableCell>
               <TableCell>

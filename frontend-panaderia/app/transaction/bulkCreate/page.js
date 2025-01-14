@@ -48,12 +48,12 @@ export default function BulkCreateTransactions() {
   const handleInputChange = (index, field, value) => {
     const updatedTransactions = [...transactions];
     const updatedErrorMessages = { ...errorMessages };
-
+  
     if (field === "quantity") {
       const transaction = updatedTransactions[index];
       let isValid = true;
       let error = "";
-
+  
       if (transaction.measure_type === "Unidad") {
         if (!/^\d+$/.test(value)) {
           isValid = false;
@@ -65,28 +65,44 @@ export default function BulkCreateTransactions() {
           error = "Solo números válidos permitidos.";
         }
       }
-
+  
       if (!isValid) {
-        updatedErrorMessages[index] = error;
+        updatedErrorMessages[`quantity_${index}`] = error;
         value = transaction.quantity || "";
       } else {
-        delete updatedErrorMessages[index];
+        delete updatedErrorMessages[`quantity_${index}`];
       }
-
+  
       updatedTransactions[index][field] = value;
     } else if (field === "id_product") {
-      const selectedProduct = products.find((product) => product.id === parseInt(value));
-      if (selectedProduct) {
-        updatedTransactions[index].name = selectedProduct.name;
-        updatedTransactions[index].price = selectedProduct.price;
-        updatedTransactions[index].measure_type = selectedProduct.measure_type;
+      const productId = parseInt(value);
+      let error = "";
+  
+      if (productId < 1) {
+        error = "El ID del producto debe ser mayor que 0.";
+        updatedErrorMessages[`id_product_${index}`] = error;
+        value = "";
+      } else {
+        const selectedProduct = products.find((product) => product.id === productId);
+        if (selectedProduct) {
+          updatedTransactions[index].name = selectedProduct.name;
+          updatedTransactions[index].price = selectedProduct.price;
+          updatedTransactions[index].measure_type = selectedProduct.measure_type;
+          delete updatedErrorMessages[`id_product_${index}`];
+        } else {
+          error = "Producto no encontrado.";
+          updatedErrorMessages[`id_product_${index}`] = error;
+        }
       }
+  
+      updatedTransactions[index][field] = value;
     }
-
-    updatedTransactions[index][field] = value;
+  
     setTransactions(updatedTransactions);
     setErrorMessages(updatedErrorMessages);
   };
+  
+  
 
   const calculateTotalPrice = () => {
     return transactions.reduce((acc, transaction) => {
@@ -171,7 +187,8 @@ export default function BulkCreateTransactions() {
                   required
                   value={transaction.id_product}
                   onChange={(e) => handleInputChange(index, "id_product", e.target.value)}
-                  list="product-ids"
+                  error={!!errorMessages[`id_product_${index}`]}
+                  helperText={errorMessages[`id_product_${index}`] || ""}
                   type="number"
                 />
                 <datalist id="product-ids">
@@ -203,8 +220,8 @@ export default function BulkCreateTransactions() {
                   type="text"
                   value={transaction.quantity}
                   onChange={(e) => handleInputChange(index, "quantity", e.target.value)}
-                  error={!!errorMessages[index]}
-                  helperText={errorMessages[index] || ""}
+                  error={!!errorMessages[`quantity_${index}`]}
+                  helperText={errorMessages[`quantity_${index}`] || ""}
                 />
               </TableCell>
               <TableCell>

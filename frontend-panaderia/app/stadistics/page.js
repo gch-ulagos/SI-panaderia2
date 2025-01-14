@@ -45,6 +45,10 @@ export default function TransactionsPage() {
   const [filterType, setFilterType] = useState("all");
   const [groupBy, setGroupBy] = useState("product");
   const [searchTerm, setSearchTerm] = useState("");
+  const [startDateError, setStartDateError] = useState(false);
+  const [endDateError, setEndDateError] = useState(false);
+
+  const [originalGhostTransactions, setOriginalGhostTransactions] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -58,9 +62,10 @@ export default function TransactionsPage() {
 
   useEffect(() => {
     if (allProducts.length > 0) {
-      processChartData(allProducts, groupBy);
+      processChartData(allProducts, groupBy, filterType);
     }
-  }, [allProducts, startDate, endDate, groupBy]);
+  }, [allProducts, startDate, endDate, groupBy, filterType]);
+  
 
   useEffect(() => {
     filterTransactions();
@@ -69,6 +74,7 @@ export default function TransactionsPage() {
   const fetchGhostTransactions = async (token) => {
     try {
       const data = await TransactionService.getGhostTransactions(token);
+      setOriginalGhostTransactions(data || []);
       setGhostTransactions(data || []);
     } catch (e) {
       console.error("Error fetching ghost transactions", e);
@@ -79,6 +85,7 @@ export default function TransactionsPage() {
     try {
       const data = await TransactionService.getAllTransactions(token);
       setAllProducts(data || []);
+      console.log(data);
     } catch (e) {
       console.error("Error fetching products", e);
     }
@@ -105,9 +112,10 @@ export default function TransactionsPage() {
         createdAt,
       } = product;
 
-      // Filtro de fechas
       if (startDate && new Date(createdAt) < new Date(startDate)) return;
       if (endDate && new Date(createdAt) > new Date(endDate)) return;
+
+      if (filterType !== "all" && transaction_type !== filterType) return;
 
       const key =
         groupBy === "product"
@@ -128,7 +136,18 @@ export default function TransactionsPage() {
   };
 
   const filterTransactions = () => {
-    const filtered = ghostTransactions.transaction?.filter((transaction) => {
+
+    const matchingProducts = allProducts.filter(
+      (product) =>
+        product.product.name &&
+        product.product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  
+    const matchingTransactionIds = matchingProducts.map(
+      (product) => product.id_transactions
+    );
+
+    const filtered = originalGhostTransactions.transaction?.filter((transaction) => {
       const transactionDate = new Date(transaction.createdAt);
       const isWithinDateRange =
         (!startDate || transactionDate >= new Date(startDate)) &&
@@ -137,14 +156,23 @@ export default function TransactionsPage() {
       const isMatchingType =
         filterType === "all" || transaction.transaction_type === filterType;
 
-      const isMatchingSearchTerm =
-        !searchTerm ||
-        transaction.product.name.toLowerCase().includes(searchTerm.toLowerCase());
+        const isMatchingSearchTerm =
+        !searchTerm || matchingTransactionIds.includes(transaction.id);
 
       return isWithinDateRange && isMatchingType && isMatchingSearchTerm;
     });
 
     setGhostTransactions({ transaction: filtered });
+  };
+
+  const resetFilters = () => {
+    setStartDate(null);
+    setEndDate(null);
+    setStartDateError(false);
+    setEndDateError(false);
+    setFilterType("all");
+    setSearchTerm("");
+    setGhostTransactions(originalGhostTransactions);
   };
 
   const DownloadAllTransacciones = async () => {
@@ -206,8 +234,7 @@ export default function TransactionsPage() {
             value={filterType}
             onChange={(e) => handleFilterChange(e.target.value)}
             fullWidth
-          >
-            <MenuItem value="all">Todos</MenuItem>
+          > 
             <MenuItem value="Venta">Ventas</MenuItem>
             <MenuItem value="Compra">Compras</MenuItem>
           </Select>
@@ -216,26 +243,88 @@ export default function TransactionsPage() {
           <TextField
             label="Fecha inicio"
             type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
+            value={startDate || ""}
+            onChange={(e) => {
+              const today = new Date();
+              const selectedStartDate = new Date(e.target.value);
+
+              if (!e.target.value || isNaN(selectedStartDate.getTime()) || selectedStartDate > today) {
+                  setStartDateError(true);
+              } else {
+                  setStartDateError(false);
+              }
+              setStartDate(e.target.value);
+            }}
+            onKeyUp={() => {
+                const today = new Date();
+                const selectedStartDate = new Date(startDate);
+
+                if (!startDate || isNaN(selectedStartDate.getTime()) || selectedStartDate > today) {
+                    setStartDateError(true);
+                } else {
+                    setStartDateError(false);
+                }
+            }}
             fullWidth
             margin="normal"
             InputLabelProps={{
               shrink: true,
             }}
+            error={startDateError}
+            helperText={
+                startDateError && startDate
+                    ? isNaN(new Date(startDate).getTime())
+                        ? 'Fecha no válida'
+                        : 'La fecha no puede ser superior al día de hoy'
+                    : ''
+            }
           />
 
           <TextField
             label="Fecha fin"
             type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
+            value={endDate || ""}
+            onChange={(e) => {
+              const selectedEndDate = new Date(e.target.value);
+
+              if (!e.target.value || isNaN(selectedEndDate.getTime()) || selectedEndDate < new Date(startDate)) {
+                  setEndDateError(true);
+              } else {
+                  setEndDateError(false);
+              }
+              setEndDate(e.target.value);
+            }}
+            onKeyUp={() => {
+                const selectedEndDate = new Date(endDate);
+
+                if (!endDate || isNaN(selectedEndDate.getTime()) || selectedEndDate < new Date(startDate)) {
+                    setEndDateError(true);
+                } else {
+                    setEndDateError(false);
+                }
+            }}
             fullWidth
             margin="normal"
             InputLabelProps={{
               shrink: true,
             }}
+            error={endDateError}
+            helperText={
+                endDateError && endDate
+                    ? isNaN(new Date(endDate).getTime())
+                        ? 'Fecha no válida'
+                        : 'La fecha de fin no puede ser antes de la fecha de inicio'
+                    : ''
+            }
           />
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={resetFilters}
+            style={{ marginTop: "10px", textTransform: "none" }}
+          >
+            Restablecer filtros
+          </Button>
           <Button variant="contained" color="primary" onClick={DownloadAllTransacciones} style={{ margin: "10px", textTransform: 'none' }}>
                 Descargar todas las transacciones
           </Button>
@@ -252,12 +341,14 @@ export default function TransactionsPage() {
                 outerRadius={80}
                 label={(entry) => entry.name}
               >
-                {chartData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={index % 2 === 0 ? COLORS[0] : COLORS[1]}
-                  />
-                ))}
+                {chartData.map((entry, index) => {
+                   return (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={entry.Venta > 0 ? COLORS[0] : COLORS[1]}
+                    />
+                  );
+                })}
               </Pie>
               <Tooltip />
               <Legend />
